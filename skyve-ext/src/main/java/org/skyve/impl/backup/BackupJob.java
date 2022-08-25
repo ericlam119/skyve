@@ -168,7 +168,7 @@ public class BackupJob extends CancellableJob {
 														else if (AttributeType.geometry.equals(attributeType)) {
 															@SuppressWarnings("resource")
 															SessionImplementor sessionImpl = (SessionImplementor) ((AbstractHibernatePersistence) p).getSession();
-															Geometry geometry = AbstractHibernatePersistence.getDialect().getGeometryType().nullSafeGet(resultSet, name, sessionImpl);
+															Geometry geometry = AbstractHibernatePersistence.getDialect().getGeometryType().fromString(""); // nullSafeGet(resultSet, name, sessionImpl);
 															if (geometry == null) {
 																value = "";
 															}

@@ -3,8 +3,8 @@ package org.skyve.impl.web.faces.pipeline.component;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.faces.component.UIComponent;
-import javax.faces.component.html.HtmlPanelGroup;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.html.HtmlPanelGroup;
 
 import org.primefaces.component.panel.Panel;
 import org.primefaces.component.toolbar.Toolbar;

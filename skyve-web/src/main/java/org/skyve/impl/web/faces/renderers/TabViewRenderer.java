@@ -2,8 +2,8 @@ package org.skyve.impl.web.faces.renderers;
 
 import java.io.IOException;
 
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
 
 import org.primefaces.component.tabview.TabView;
 

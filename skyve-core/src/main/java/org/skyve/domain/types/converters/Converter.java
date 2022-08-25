@@ -14,7 +14,7 @@ public interface Converter<T> {
 	 * @return	An instance of T.
 	 * @throws ConversionException
 	 */
-	@Nullable T fromDisplayValue(@Nonnull String displayValue) throws ConversionException;
+	@javax.annotation.Nullable T fromDisplayValue(@Nonnull String displayValue) throws ConversionException;
 
 	/**
 	 * Convert an instance of T to a display value.

@@ -3,9 +3,9 @@ package org.skyve.impl.web.faces.components;
 import java.io.IOException;
 import java.util.Map;
 
-import javax.faces.component.FacesComponent;
-import javax.faces.component.UIComponentBase;
-import javax.faces.context.FacesContext;
+import jakarta.faces.component.FacesComponent;
+import jakarta.faces.component.UIComponentBase;
+import jakarta.faces.context.FacesContext;
 
 import org.skyve.impl.util.UtilImpl;
 import org.skyve.impl.web.faces.FacesUtil;

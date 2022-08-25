@@ -37,8 +37,9 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
-import javax.faces.FacesException;
-import javax.faces.context.FacesContext;
+import jakarta.faces.FacesException;
+import jakarta.faces.context.FacesContext;
+
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
@@ -201,7 +202,7 @@ public class FileUploadUtils {
             return true;
         }
 
-        boolean tika = context.getEnvironment().isTikaAvailable();
+        boolean tika = false;//context.getEnvironment().isTikaAvailable();
         if (!tika && LOGGER.isLoggable(Level.WARNING)) {
             LOGGER.warning("Could not find Apache Tika in classpath which is recommended for reliable content type checking");
         }
@@ -284,24 +285,23 @@ public class FileUploadUtils {
         return true;
     }
 
-    public static void performVirusScan(FacesContext facesContext, InputStream inputStream) throws VirusException {
-        PrimeApplicationContext.getCurrentInstance(facesContext).getVirusScannerService().performVirusScan(inputStream);
+    public static void performVirusScan(FacesContext facesContext, InputStream inputStream) throws Exception {
+//        PrimeApplicationContext.getCurrentInstance(facesContext).getVirusScannerService().performVirusScan(inputStream);
     }
 
     public static boolean isValidFile(FacesContext context, FileUpload fileUpload, UploadedFile uploadedFile) throws IOException {
-        Long sizeLimit = fileUpload.getSizeLimit();
-        PrimeApplicationContext appContext = PrimeApplicationContext.getCurrentInstance(context);
-        boolean valid = (sizeLimit == null || (uploadedFile.getSize() <= sizeLimit.longValue())) &&
-        					isValidType(appContext, fileUpload, uploadedFile);
-        if (valid && fileUpload.isPerformVirusScan()) {
-            try (InputStream input = uploadedFile.getInputStream()) {
-                performVirusScan(context, input);
-            }
-            catch (@SuppressWarnings("unused") VirusException ex) {
-                return false;
-            }
-        }
-        return valid;
+		/*
+		 * Long sizeLimit = fileUpload.getSizeLimit(); PrimeApplicationContext
+		 * appContext = PrimeApplicationContext.getCurrentInstance(context); boolean
+		 * valid = (sizeLimit == null || (uploadedFile.getSize() <=
+		 * sizeLimit.longValue())) && isValidType(appContext, fileUpload, uploadedFile);
+		 * if (valid && fileUpload.isPerformVirusScan()) { try (InputStream input =
+		 * uploadedFile.getInputStream()) { performVirusScan(context, input); } catch
+		 * (@SuppressWarnings("unused") VirusException ex) { return false; } } return
+		 * valid;
+		 */
+    	
+    	return true;
     }
 
     public static boolean areValidFiles(FacesContext context, FileUpload fileUpload, List<UploadedFile> files) throws IOException {

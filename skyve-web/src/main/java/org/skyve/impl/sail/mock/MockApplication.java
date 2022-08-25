@@ -4,39 +4,41 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Locale;
 
-import javax.el.ExpressionFactory;
-import javax.faces.FacesException;
-import javax.faces.application.Application;
-import javax.faces.application.NavigationHandler;
-import javax.faces.application.StateManager;
-import javax.faces.application.ViewHandler;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIForm;
-import javax.faces.component.UIOutput;
-import javax.faces.component.UIParameter;
-import javax.faces.component.UISelectItems;
-import javax.faces.component.behavior.Behavior;
-import javax.faces.component.html.HtmlForm;
-import javax.faces.component.html.HtmlInputHidden;
-import javax.faces.component.html.HtmlInputText;
-import javax.faces.component.html.HtmlOutputLink;
-import javax.faces.component.html.HtmlOutputText;
-import javax.faces.component.html.HtmlPanelGrid;
-import javax.faces.component.html.HtmlPanelGroup;
-import javax.faces.context.FacesContext;
-import javax.faces.convert.Converter;
-import javax.faces.el.MethodBinding;
-import javax.faces.el.PropertyResolver;
-import javax.faces.el.ReferenceSyntaxException;
-import javax.faces.el.ValueBinding;
-import javax.faces.el.VariableResolver;
-import javax.faces.event.ActionListener;
-import javax.faces.validator.Validator;
+import jakarta.el.ExpressionFactory;
+import jakarta.faces.FacesException;
+import jakarta.faces.application.Application;
+import jakarta.faces.application.NavigationHandler;
+import jakarta.faces.application.StateManager;
+import jakarta.faces.application.ViewHandler;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIForm;
+import jakarta.faces.component.UIOutput;
+import jakarta.faces.component.UIParameter;
+import jakarta.faces.component.UISelectItems;
+import jakarta.faces.component.behavior.Behavior;
+import jakarta.faces.component.html.HtmlForm;
+import jakarta.faces.component.html.HtmlInputHidden;
+import jakarta.faces.component.html.HtmlInputText;
+import jakarta.faces.component.html.HtmlOutputLink;
+import jakarta.faces.component.html.HtmlOutputText;
+import jakarta.faces.component.html.HtmlPanelGrid;
+import jakarta.faces.component.html.HtmlPanelGroup;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.convert.Converter;
+import jakarta.faces.el.MethodBinding;
+import jakarta.faces.el.PropertyResolver;
+import jakarta.faces.el.ReferenceSyntaxException;
+import jakarta.faces.el.ValueBinding;
+import jakarta.faces.el.VariableResolver;
+import jakarta.faces.event.ActionListener;
+import jakarta.faces.validator.Validator;
 
 import org.primefaces.behavior.ajax.AjaxBehavior;
 import org.primefaces.behavior.confirm.ConfirmBehavior;
 import org.primefaces.component.accordionpanel.AccordionPanel;
+import org.primefaces.component.api.Widget;
 import org.primefaces.component.autocomplete.AutoComplete;
+import org.primefaces.component.autocomplete.AutoCompleteBase;
 import org.primefaces.component.barchart.BarChart;
 import org.primefaces.component.breadcrumb.BreadCrumb;
 import org.primefaces.component.button.Button;
@@ -50,7 +52,7 @@ import org.primefaces.component.datatable.DataTable;
 import org.primefaces.component.defaultcommand.DefaultCommand;
 import org.primefaces.component.dialog.Dialog;
 import org.primefaces.component.donutchart.DonutChart;
-import org.primefaces.component.editor.Editor;
+//import org.primefaces.component.editor.Editor;
 import org.primefaces.component.fieldset.Fieldset;
 import org.primefaces.component.fileupload.FileUpload;
 import org.primefaces.component.graphicimage.GraphicImage;
@@ -158,9 +160,9 @@ public class MockApplication extends Application {
 		else if (DonutChart.COMPONENT_TYPE.equals(componentType)) {
 			return new DonutChart();
 		}
-		else if (Editor.COMPONENT_TYPE.equals(componentType)) {
-			return new Editor();
-		}
+//		else if (Editor.COMPONENT_TYPE.equals(componentType)) {
+//			return new Editor();
+//		}
 		else if (Fieldset.COMPONENT_TYPE.equals(componentType)) {
 			return new Fieldset();
 		}

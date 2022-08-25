@@ -1,8 +1,8 @@
 package org.skyve.impl.web.faces;
 
-import javax.websocket.CloseReason;
-import javax.websocket.EndpointConfig;
-import javax.websocket.Session;
+import jakarta.websocket.CloseReason;
+import jakarta.websocket.EndpointConfig;
+import jakarta.websocket.Session;
 
 import org.omnifaces.cdi.push.SocketEndpoint;
 import org.skyve.util.PushMessage;

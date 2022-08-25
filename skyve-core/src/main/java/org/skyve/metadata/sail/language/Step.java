@@ -1,6 +1,6 @@
 package org.skyve.metadata.sail.language;
 
-import javax.xml.bind.annotation.XmlTransient;
+import jakarta.xml.bind.annotation.XmlTransient;
 
 import org.skyve.impl.sail.execution.AutomationContext;
 

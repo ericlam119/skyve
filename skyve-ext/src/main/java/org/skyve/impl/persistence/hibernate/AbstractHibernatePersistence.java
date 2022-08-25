@@ -23,9 +23,9 @@ import java.util.logging.Level;
 
 import javax.cache.management.CacheStatisticsMXBean;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityNotFoundException;
+import jakarta.persistence.EntityNotFoundException;
 import javax.persistence.EntityTransaction;
-import javax.persistence.RollbackException;
+import jakarta.persistence.RollbackException;
 
 import org.apache.deltaspike.core.api.provider.BeanProvider;
 import org.hibernate.Filter;

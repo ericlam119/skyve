@@ -2,7 +2,7 @@ package org.skyve.impl.domain.types.jaxb;
 
 import java.math.BigDecimal;
 
-import javax.xml.bind.annotation.adapters.XmlAdapter;
+import jakarta.xml.bind.annotation.adapters.XmlAdapter;
 
 import org.skyve.domain.types.Decimal10;
 

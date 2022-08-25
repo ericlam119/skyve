@@ -1,7 +1,7 @@
 package org.skyve.impl.metadata.model.document.field.validator;
 
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlType;
 
 import org.skyve.domain.messages.ValidationException;
 import org.skyve.domain.messages.Message;

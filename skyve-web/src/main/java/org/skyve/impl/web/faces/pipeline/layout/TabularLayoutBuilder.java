@@ -3,9 +3,9 @@ package org.skyve.impl.web.faces.pipeline.layout;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.faces.component.UIComponent;
-import javax.faces.component.html.HtmlPanelGrid;
-import javax.faces.component.html.HtmlPanelGroup;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.html.HtmlPanelGrid;
+import jakarta.faces.component.html.HtmlPanelGroup;
 
 import org.primefaces.component.column.Column;
 import org.primefaces.component.message.Message;

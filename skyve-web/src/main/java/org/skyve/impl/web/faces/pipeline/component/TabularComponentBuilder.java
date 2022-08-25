@@ -5,23 +5,23 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import javax.el.MethodExpression;
-import javax.el.ValueExpression;
-import javax.faces.component.UICommand;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIComponentBase;
-import javax.faces.component.UIInput;
-import javax.faces.component.UIOutput;
-import javax.faces.component.UIPanel;
-import javax.faces.component.UISelectItems;
-import javax.faces.component.html.HtmlInputHidden;
-import javax.faces.component.html.HtmlInputText;
-import javax.faces.component.html.HtmlOutputLink;
-import javax.faces.component.html.HtmlOutputText;
-import javax.faces.component.html.HtmlPanelGrid;
-import javax.faces.component.html.HtmlPanelGroup;
-import javax.faces.component.html.HtmlSelectOneMenu;
-import javax.faces.convert.Converter;
+import jakarta.el.MethodExpression;
+import jakarta.el.ValueExpression;
+import jakarta.faces.component.UICommand;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIComponentBase;
+import jakarta.faces.component.UIInput;
+import jakarta.faces.component.UIOutput;
+import jakarta.faces.component.UIPanel;
+import jakarta.faces.component.UISelectItems;
+import jakarta.faces.component.html.HtmlInputHidden;
+import jakarta.faces.component.html.HtmlInputText;
+import jakarta.faces.component.html.HtmlOutputLink;
+import jakarta.faces.component.html.HtmlOutputText;
+import jakarta.faces.component.html.HtmlPanelGrid;
+import jakarta.faces.component.html.HtmlPanelGroup;
+import jakarta.faces.component.html.HtmlSelectOneMenu;
+import jakarta.faces.convert.Converter;
 
 import org.primefaces.behavior.ajax.AjaxBehavior;
 import org.primefaces.behavior.ajax.AjaxBehaviorListenerImpl;
@@ -600,7 +600,7 @@ public class TabularComponentBuilder extends ComponentBuilder {
 								alignment,
 	                            false,
 	                            column.getPixelWidth());
-		result.setPriority(columnPriority);
+		result.setSortPriority(columnPriority);
 		if (columnPriority < 6) {
 			columnPriority++;
 		}
@@ -688,7 +688,7 @@ public class TabularComponentBuilder extends ComponentBuilder {
 								alignment,
 				                false,
 				                column.getPixelWidth());
-		col.setPriority(columnPriority);
+		col.setSortPriority(columnPriority);
 		if (columnPriority < 6) {
 			columnPriority++;
 		}
@@ -727,7 +727,7 @@ public class TabularComponentBuilder extends ComponentBuilder {
 									HorizontalAlignment.centre,
 					                true,
 					                SINGLE_ACTION_COLUMN_WIDTH_INTEGER);
-			col.setPriority(1);
+			col.setSortPriority(1);
 			List<UIComponent> children = col.getChildren();
 
 			String disabledConditionName = grid.getDisabledConditionName();
@@ -1028,7 +1028,7 @@ public class TabularComponentBuilder extends ComponentBuilder {
 		OverlayPanel overlay = (OverlayPanel) a.createComponent(OverlayPanel.COMPONENT_TYPE);
 		setId(overlay, null);
 		overlay.setFor(mapButtonId);
-		overlay.setHideEffect("fade");
+//		overlay.setHideEffect("fade");
 		overlay.setDynamic(false);
 		overlay.setShowCloseIcon(true);
 		overlay.setModal(false); // modal on PF8 causes the transparent modal mask to sit over the top of the overlay panel
@@ -1537,7 +1537,7 @@ public class TabularComponentBuilder extends ComponentBuilder {
 			Column column = (Column) a.createComponent(Column.COMPONENT_TYPE);
 			setId(column, null);
 			column.setHeaderText(displayName);
-			column.setPriority(columnPriority);
+			column.setSortPriority(columnPriority);
 			column.setStyleClass("hiddenFilter");
 			if (columnPriority < 6) {
 				columnPriority++;
@@ -1723,7 +1723,7 @@ public class TabularComponentBuilder extends ComponentBuilder {
 													   String parentId,
 													   Map<String, String> properties) {
 		Column column = (Column) a.createComponent(Column.COMPONENT_TYPE);
-		column.setPriority(1);
+		column.setSortPriority(1);
 		column.setWidth(SINGLE_ACTION_COLUMN_WIDTH);
 		column.setStyle("text-align:center !important");
 
@@ -2345,7 +2345,7 @@ public class TabularComponentBuilder extends ComponentBuilder {
 			setId(overlay, null);
 			overlay.setWidgetVar(sanitisedBinding + "Overlay");
 			overlay.setFor(uploadButtonId);
-			overlay.setHideEffect("fade");
+//			overlay.setHideEffect("fade");
 			overlay.setDynamic(false);
 			overlay.setShowCloseIcon(true);
 			overlay.setModal(false); // modal on PF8 causes the transparent modal mask to sit over the top of the overlay panel
@@ -3473,7 +3473,7 @@ public class TabularComponentBuilder extends ComponentBuilder {
 		String overlayId = overlay.getId();
 		overlay.setWidgetVar(overlayId + "Overlay");
 		overlay.setFor(uploadButtonId);
-		overlay.setHideEffect("fade");
+//		overlay.setHideEffect("fade");
 		overlay.setDynamic(false);
 		overlay.setShowCloseIcon(true);
 		overlay.setModal(false); // modal on PF8 causes the opaque mask to sit over the top of the overlay panel
@@ -4060,7 +4060,7 @@ public class TabularComponentBuilder extends ComponentBuilder {
             final Column dragHandleColumn = (Column) a.createComponent(Column.COMPONENT_TYPE);
             setId(dragHandleColumn, null);
             dragHandleColumn.setWidth("10");
-            dragHandleColumn.setPriority(1);
+            dragHandleColumn.setSortPriority(1);
 
             final HtmlPanelGroup dragHandle = (HtmlPanelGroup) a.createComponent(HtmlPanelGroup.COMPONENT_TYPE);
 			dragHandle.setStyleClass("fa fa-sort");

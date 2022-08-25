@@ -9,8 +9,8 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.el.ELManager;
-import javax.el.ELProcessor;
+import jakarta.el.ELManager;
+import jakarta.el.ELProcessor;
 
 import org.skyve.CORE;
 import org.skyve.domain.Bean;

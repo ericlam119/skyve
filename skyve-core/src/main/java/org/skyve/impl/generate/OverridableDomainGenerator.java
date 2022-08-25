@@ -2723,7 +2723,7 @@ public final class OverridableDomainGenerator extends DomainGenerator {
 		final Path actionTestPath = Paths.get(generatedTestPath + actionPath);
 
 		for (String actionName : document.getDefinedActionNames()) {
-			boolean skipGeneration = false, useExtensionDocument = false;
+			boolean skipGeneration = true, useExtensionDocument = false;
 
 			// check this is a ServerSideAction
 			String className = new StringBuilder(256).append(actionTestPath.toString()

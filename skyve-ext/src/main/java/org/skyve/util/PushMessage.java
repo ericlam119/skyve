@@ -8,7 +8,7 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import javax.websocket.Session;
+import jakarta.websocket.Session;
 
 import org.skyve.CORE;
 import org.skyve.domain.messages.MessageSeverity;

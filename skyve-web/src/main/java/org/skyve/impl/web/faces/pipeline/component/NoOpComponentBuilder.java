@@ -2,7 +2,7 @@ package org.skyve.impl.web.faces.pipeline.component;
 
 import java.util.List;
 
-import javax.faces.component.UIComponent;
+import jakarta.faces.component.UIComponent;
 
 import org.skyve.domain.Bean;
 import org.skyve.domain.types.converters.Converter;
@@ -417,7 +417,7 @@ public class NoOpComponentBuilder extends ComponentBuilder {
 											String formDisabledConditionName,
 											String title,
 											boolean required,
-											javax.faces.convert.Converter facesConverter) {
+											jakarta.faces.convert.Converter facesConverter) {
 		return component;
 	}
 
@@ -442,7 +442,7 @@ public class NoOpComponentBuilder extends ComponentBuilder {
 										Integer length,
 										Converter<?> converter,
 										Format<?> format,
-										javax.faces.convert.Converter facesConverter) {
+										jakarta.faces.convert.Converter facesConverter) {
 		return component;
 	}
 

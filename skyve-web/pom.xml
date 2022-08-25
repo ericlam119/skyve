@@ -29,11 +29,13 @@
 		<dependency>
 			<groupId>org.primefaces</groupId>
 			<artifactId>primefaces</artifactId>
+			<classifier>jakarta</classifier>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.primefaces.extensions</groupId>
 			<artifactId>primefaces-extensions</artifactId>
+			<classifier>jakarta</classifier>
 			<scope>compile</scope>
 			<exclusions>
 				<exclusion>

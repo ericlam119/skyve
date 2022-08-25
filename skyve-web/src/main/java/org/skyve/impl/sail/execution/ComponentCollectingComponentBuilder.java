@@ -1,12 +1,5 @@
 package org.skyve.impl.sail.execution;
 
-import java.util.List;
-
-import javax.faces.component.UIComponent;
-import javax.faces.component.html.HtmlPanelGroup;
-
-import org.primefaces.component.button.Button;
-import org.primefaces.component.commandbutton.CommandButton;
 import org.skyve.domain.Bean;
 import org.skyve.domain.types.converters.Converter;
 import org.skyve.domain.types.converters.Format;
@@ -37,6 +30,8 @@ import org.skyve.metadata.sail.language.step.context.PushEditContext;
 import org.skyve.metadata.view.Action;
 import org.skyve.metadata.view.model.list.ListModel;
 import org.skyve.metadata.view.widget.bound.Bound;
+
+import jakarta.faces.component.UIComponent;
 
 class ComponentCollectingComponentBuilder extends NoOpComponentBuilder {
 	private PrimeFacesAutomationContext context;
@@ -213,28 +208,28 @@ class ComponentCollectingComponentBuilder extends NoOpComponentBuilder {
 	}
 
 	private void listGrid(UIComponent listGridComponent) {
-		context.put(addedViewComponentIdentifier, listGridComponent, addedViewComponentIdentifier);
-		UIComponent potentialActionColumn = listGridComponent.getChildren().get(listGridComponent.getChildCount() - 1);
-		UIComponent header = potentialActionColumn.getFacet("header");
-		if (header instanceof HtmlPanelGroup) { // flex grid inside column header
-			if (header.getChildCount() >= 2) { // add button is 2nd in the list if it exists
-				UIComponent addButton = header.getChildren().get(1);
-				if ((addButton instanceof CommandButton) || (addButton instanceof Button)) { // there is an add button (might be no create privilege)
-					context.put(addedViewComponentIdentifier + ".new", addButton, addedViewComponent);
-				}
-			}
-		}
-		else if (header instanceof CommandButton) { // command button straight in the header facet
-			context.put(addedViewComponentIdentifier + ".new", header, addedViewComponent);
-		}
-		UIComponent zoomButton = potentialActionColumn.getChildren().get(0);
-		if ((zoomButton instanceof CommandButton) || (zoomButton instanceof Button)) {
-			context.put(addedViewComponentIdentifier + ".zoom", zoomButton, addedViewComponent);
-		}
-		context.put(addedViewComponentIdentifier + ".select", listGridComponent.getChildren().get(0), addedViewComponent);
-
-		addedViewComponent = null;
-		addedViewComponentIdentifier = null;
+//		context.put(addedViewComponentIdentifier, listGridComponent, addedViewComponentIdentifier);
+//		UIComponent potentialActionColumn = listGridComponent.getChildren().get(listGridComponent.getChildCount() - 1);
+//		UIComponent header = potentialActionColumn.getFacet("header");
+//		if (header instanceof HtmlPanelGroup) { // flex grid inside column header
+//			if (header.getChildCount() >= 2) { // add button is 2nd in the list if it exists
+//				UIComponent addButton = header.getChildren().get(1);
+//				if ((addButton instanceof CommandButton) || (addButton instanceof Button)) { // there is an add button (might be no create privilege)
+//					context.put(addedViewComponentIdentifier + ".new", addButton, addedViewComponent);
+//				}
+//			}
+//		}
+//		else if (header instanceof CommandButton) { // command button straight in the header facet
+//			context.put(addedViewComponentIdentifier + ".new", header, addedViewComponent);
+//		}
+//		UIComponent zoomButton = potentialActionColumn.getChildren().get(0);
+//		if ((zoomButton instanceof CommandButton) || (zoomButton instanceof Button)) {
+//			context.put(addedViewComponentIdentifier + ".zoom", zoomButton, addedViewComponent);
+//		}
+//		context.put(addedViewComponentIdentifier + ".select", listGridComponent.getChildren().get(0), addedViewComponent);
+//
+//		addedViewComponent = null;
+//		addedViewComponentIdentifier = null;
 	}
 	
 	@Override
@@ -246,40 +241,42 @@ class ComponentCollectingComponentBuilder extends NoOpComponentBuilder {
 												String singluarDocumentAlias,
 												boolean inline) {
 		// component = current as it was set in the previous builder in the chain
-		if (component != null) {
-			String dataGridIdentifier = grid.getBinding();
-			context.put(dataGridIdentifier, component, grid);
-			UIComponent potentialActionColumn = component.getChildren().get(component.getChildCount() - 1);
-			UIComponent header = potentialActionColumn.getFacet("header");
-			if (header instanceof HtmlPanelGroup) { // flex grid inside column header
-				if (header.getChildCount() > 0) { // add button is 1st in the list if it exists
-					UIComponent addButton = header.getChildren().get(0);
-					if (addButton instanceof CommandButton) { // there is an add button (might be no create privilege)
-						context.put(dataGridIdentifier + ".new", addButton, grid);
-					}
-				}
-			}
-			else if (header instanceof CommandButton) { // command button straight in the header facet
-				context.put(dataGridIdentifier + ".new", header, grid);
-			}
-			List<UIComponent> potentialActionColumnChildren = potentialActionColumn.getChildren();
-			if (potentialActionColumnChildren.size() > 0) {
-				UIComponent zoomButton = potentialActionColumnChildren.get(0);
-				if (zoomButton instanceof CommandButton) {
-					context.put(dataGridIdentifier + ".zoom", zoomButton, grid);
-				}
-			}
-			// child 1 is a spacer.
-			if (potentialActionColumnChildren.size() > 2) {
-				UIComponent removeButton = potentialActionColumnChildren.get(2);
-				if (removeButton instanceof CommandButton) {
-					context.put(dataGridIdentifier + ".remove", removeButton, grid);
-				}
-			}
-			context.put(dataGridIdentifier + ".select", component.getChildren().get(0), grid);
-		}
+//		if (component != null) {
+//			String dataGridIdentifier = grid.getBinding();
+//			context.put(dataGridIdentifier, component, grid);
+//			UIComponent potentialActionColumn = component.getChildren().get(component.getChildCount() - 1);
+//			UIComponent header = potentialActionColumn.getFacet("header");
+//			if (header instanceof HtmlPanelGroup) { // flex grid inside column header
+//				if (header.getChildCount() > 0) { // add button is 1st in the list if it exists
+//					UIComponent addButton = header.getChildren().get(0);
+//					if (addButton instanceof CommandButton) { // there is an add button (might be no create privilege)
+//						context.put(dataGridIdentifier + ".new", addButton, grid);
+//					}
+//				}
+//			}
+//			else if (header instanceof CommandButton) { // command button straight in the header facet
+//				context.put(dataGridIdentifier + ".new", header, grid);
+//			}
+//			List<UIComponent> potentialActionColumnChildren = potentialActionColumn.getChildren();
+//			if (potentialActionColumnChildren.size() > 0) {
+//				UIComponent zoomButton = potentialActionColumnChildren.get(0);
+//				if (zoomButton instanceof CommandButton) {
+//					context.put(dataGridIdentifier + ".zoom", zoomButton, grid);
+//				}
+//			}
+//			// child 1 is a spacer.
+//			if (potentialActionColumnChildren.size() > 2) {
+//				UIComponent removeButton = potentialActionColumnChildren.get(2);
+//				if (removeButton instanceof CommandButton) {
+//					context.put(dataGridIdentifier + ".remove", removeButton, grid);
+//				}
+//			}
+//			context.put(dataGridIdentifier + ".select", component.getChildren().get(0), grid);
+//		}
+//		
+//		return component;
 		
-		return component;
+		return null;
 	}
 
 	@Override
@@ -401,7 +398,7 @@ class ComponentCollectingComponentBuilder extends NoOpComponentBuilder {
 											String formDisabledConditionName,
 											String title,
 											boolean required,
-											javax.faces.convert.Converter facesConverter) {
+											jakarta.faces.convert.Converter facesConverter) {
 		return putByBinding(spinner, component);
 	}
 	
@@ -424,7 +421,7 @@ class ComponentCollectingComponentBuilder extends NoOpComponentBuilder {
 										Integer length,
 										Converter<?> converter,
 										Format<?> format,
-										javax.faces.convert.Converter facesConverter) {
+										jakarta.faces.convert.Converter facesConverter) {
 		return putByBinding(text, component);
 	}
 

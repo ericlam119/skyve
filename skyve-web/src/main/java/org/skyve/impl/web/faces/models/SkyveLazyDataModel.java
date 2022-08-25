@@ -164,7 +164,7 @@ public class SkyveLazyDataModel extends LazyDataModel<BeanMapAdapter<Bean>> {
 		return result;
 	}
 
-	@Override
+//	@Override
 	public List<BeanMapAdapter<Bean>> load(int first,
 											int pageSize,
 											String sortField,
@@ -172,7 +172,10 @@ public class SkyveLazyDataModel extends LazyDataModel<BeanMapAdapter<Bean>> {
 											Map<String, FilterMeta> filters) {
 		Map<String, SortMeta> sorts = null;
 		if (sortField != null) {
-			sorts = Collections.singletonMap(sortField, new SortMeta(null, sortField, sortOrder, null));
+//			sorts = Collections.singletonMap(sortField, new SortMeta(null, sortField, sortOrder, null));
+			SortMeta sm = new SortMeta();
+//			sm.set
+			sorts = Collections.singletonMap(sortField, sm);
 		}
 		return load(first, pageSize, sorts, filters);
 	}
@@ -181,7 +184,7 @@ public class SkyveLazyDataModel extends LazyDataModel<BeanMapAdapter<Bean>> {
 	 * Called when encoding the rows of a data table or data list.
 	 */
 	@Override
-	public Object getRowKey(BeanMapAdapter<Bean> bean) {
+	public String getRowKey(BeanMapAdapter<Bean> bean) {
 		return bean.getBean().getBizId();
 	}
 	
@@ -201,10 +204,10 @@ public class SkyveLazyDataModel extends LazyDataModel<BeanMapAdapter<Bean>> {
 		SortParameter[] sortParameters = new SortParameter[l];
 		int i = 0;
 		for (SortMeta sm : multiSortMeta.values()) {
-			if (UtilImpl.COMMAND_TRACE) UtilImpl.LOGGER.info(String.format("    SORT by %s %s", sm.getSortField(), sm.getSortOrder()));
+//			if (UtilImpl.COMMAND_TRACE) UtilImpl.LOGGER.info(String.format("    SORT by %s %s", sm.getSortField(), sm.getSortOrder()));
 			SortParameter sp = new SortParameterImpl();
-			sp.setBy(sm.getSortField());
-			sp.setDirection((SortOrder.DESCENDING.equals(sm.getSortOrder())) ? SortDirection.descending : null);
+			sp.setBy(sm.getSortBy().getExpressionString());
+			sp.setDirection((SortOrder.DESCENDING.equals(sm.getOrder())) ? SortDirection.descending : null);
 			sortParameters[i++] = sp;
 		}
 
@@ -314,5 +317,11 @@ public class SkyveLazyDataModel extends LazyDataModel<BeanMapAdapter<Bean>> {
 				}
 			}
 		}
+	}
+
+	@Override
+	public int count(Map<String, FilterMeta> filterBy) {
+		
+		return 0;
 	}
 }

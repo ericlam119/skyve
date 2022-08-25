@@ -1,7 +1,7 @@
 package org.skyve.impl.metadata.view.model.chart;
 
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlType;
 
 import org.skyve.impl.util.XMLMetaData;
 import org.skyve.metadata.view.model.chart.Bucket;

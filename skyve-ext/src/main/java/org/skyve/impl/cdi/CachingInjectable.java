@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import javax.cache.CacheManager;
 import javax.cache.management.CacheStatisticsMXBean;
-import javax.enterprise.inject.Alternative;
+import jakarta.enterprise.inject.Alternative;
 
 import org.ehcache.Cache;
 import org.ehcache.CachePersistenceException;

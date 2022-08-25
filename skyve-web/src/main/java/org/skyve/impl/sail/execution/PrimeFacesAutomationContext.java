@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import javax.faces.component.NamingContainer;
-import javax.faces.component.UIComponent;
+import jakarta.faces.component.NamingContainer;
+import jakarta.faces.component.UIComponent;
 
 import org.skyve.impl.web.faces.beans.FacesView;
 import org.skyve.impl.web.faces.components.ListGrid;

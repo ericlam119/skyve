@@ -1,6 +1,6 @@
 package org.skyve.impl.metadata.repository.customer;
 
-import javax.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.XmlType;
 
 import org.skyve.impl.metadata.repository.NamedMetaData;
 import org.skyve.impl.util.XMLMetaData;

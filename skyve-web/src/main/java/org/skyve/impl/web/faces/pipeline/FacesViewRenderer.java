@@ -4,9 +4,9 @@ import java.util.List;
 import java.util.Stack;
 import java.util.concurrent.atomic.AtomicReference;
 
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIComponentBase;
-import javax.faces.component.UIOutput;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIComponentBase;
+import jakarta.faces.component.UIOutput;
 
 import org.primefaces.component.calendar.Calendar;
 import org.skyve.domain.Bean;
@@ -2152,8 +2152,8 @@ public class FacesViewRenderer extends ViewRenderer {
 		eventSource = null;
 	}
 
-	private static javax.faces.convert.Converter convertConverter(Converter<?> converter, AttributeType type) {
-		javax.faces.convert.Converter result = null;
+	private static jakarta.faces.convert.Converter convertConverter(Converter<?> converter, AttributeType type) {
+		jakarta.faces.convert.Converter result = null;
 		if (converter != null) {
 			// Date
 			if (converter instanceof org.skyve.domain.types.converters.date.DD_MM_YYYY) {

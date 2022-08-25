@@ -1,7 +1,7 @@
 package org.skyve.impl.web.faces.beans;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
+import jakarta.faces.bean.ManagedBean;
+import jakarta.faces.bean.RequestScoped;
 
 import org.skyve.impl.util.UtilImpl;
 

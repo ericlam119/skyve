@@ -9,7 +9,7 @@ import java.util.TreeSet;
 import java.util.UUID;
 
 import javax.annotation.Nullable;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 import org.skyve.CORE;
 import org.skyve.impl.metadata.customer.CustomerImpl;

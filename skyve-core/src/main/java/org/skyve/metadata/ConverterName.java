@@ -1,6 +1,6 @@
 package org.skyve.metadata;
 
-import javax.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.XmlType;
 
 import org.skyve.domain.types.converters.Converter;
 import org.skyve.domain.types.converters.date.DD_MMM_YYYY;

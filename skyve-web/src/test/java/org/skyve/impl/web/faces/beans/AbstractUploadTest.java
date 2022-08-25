@@ -3,7 +3,7 @@ package org.skyve.impl.web.faces.beans;
 import java.io.IOException;
 import java.io.InputStream;
 
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.FacesContext;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -52,6 +52,12 @@ public class AbstractUploadTest {
 			this.fileName = fileName;
 			this.size = size;
 			return this;
+		}
+
+		@Override
+		public void delete() throws IOException {
+			// TODO Auto-generated method stub
+			
 		}
 	}
 	

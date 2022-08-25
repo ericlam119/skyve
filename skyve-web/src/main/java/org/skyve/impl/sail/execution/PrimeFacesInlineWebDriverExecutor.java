@@ -2,7 +2,7 @@ package org.skyve.impl.sail.execution;
 
 import java.util.List;
 
-import javax.faces.component.UIComponent;
+import jakarta.faces.component.UIComponent;
 
 import org.primefaces.component.calendar.Calendar;
 import org.primefaces.component.colorpicker.ColorPicker;

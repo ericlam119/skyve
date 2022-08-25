@@ -1,6 +1,6 @@
 package org.skyve.impl.sail.execution;
 
-import javax.faces.component.UIComponent;
+import jakarta.faces.component.UIComponent;
 
 import org.skyve.impl.metadata.Container;
 import org.skyve.impl.web.faces.pipeline.layout.NoOpLayoutBuilder;

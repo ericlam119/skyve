@@ -1,8 +1,8 @@
 package org.skyve.admin.web;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
-import javax.faces.context.FacesContext;
+import jakarta.faces.bean.ManagedBean;
+import jakarta.faces.bean.RequestScoped;
+import jakarta.faces.context.FacesContext;
 
 import org.skyve.CORE;
 import org.skyve.domain.Bean;

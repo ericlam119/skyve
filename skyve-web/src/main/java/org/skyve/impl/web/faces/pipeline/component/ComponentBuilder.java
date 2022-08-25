@@ -3,12 +3,12 @@ package org.skyve.impl.web.faces.pipeline.component;
 import java.util.List;
 import java.util.Map;
 
-import javax.el.MethodExpression;
-import javax.faces.component.UICommand;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIComponentBase;
-import javax.faces.component.UIOutput;
-import javax.faces.component.html.HtmlOutputLink;
+import jakarta.el.MethodExpression;
+import jakarta.faces.component.UICommand;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIComponentBase;
+import jakarta.faces.component.UIOutput;
+import jakarta.faces.component.html.HtmlOutputLink;
 
 import org.primefaces.behavior.ajax.AjaxBehavior;
 import org.primefaces.behavior.ajax.AjaxBehaviorListenerImpl;
@@ -367,7 +367,7 @@ public abstract class ComponentBuilder extends AbstractFacesBuilder {
 													String formDisabledConditionName,
 													String title,
 													boolean required,
-													javax.faces.convert.Converter facesConverter);
+													jakarta.faces.convert.Converter facesConverter);
 	
 	public abstract EventSourceComponent text(EventSourceComponent component, 
 												String dataWidgetVar, 
@@ -378,7 +378,7 @@ public abstract class ComponentBuilder extends AbstractFacesBuilder {
 												Integer length,
 												Converter<?> converter,
 												Format<?> format,
-												javax.faces.convert.Converter facesConverter);
+												jakarta.faces.convert.Converter facesConverter);
 
 	public abstract EventSourceComponent textArea(EventSourceComponent component, 
 													String dataWidgetVar,

@@ -1,6 +1,6 @@
 package org.skyve.impl.web.faces.pipeline.component;
 
-import javax.faces.component.UIComponent;
+import jakarta.faces.component.UIComponent;
 
 import org.primefaces.component.api.UIData;
 import org.skyve.domain.Bean;
@@ -21,9 +21,9 @@ public class PaginatedListGridBuilder extends NoOpComponentBuilder {
 									boolean aggregateQuery) {
 		if (component != null) {
 			UIData dt = (UIData) component;
-			dt.setPaginator(true);
-	    	dt.setRowsPerPageTemplate("25,50,75,100");
-	    	dt.setPaginatorAlwaysVisible(false);
+//			dt.setPaginator(true);
+//	    	dt.setRowsPerPageTemplate("25,50,75,100");
+//	    	dt.setPaginatorAlwaysVisible(false);
 		}
 		
 		return component;

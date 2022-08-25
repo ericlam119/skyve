@@ -2,9 +2,9 @@ package org.skyve.impl.web.faces.beans;
 
 import java.util.Set;
 
-import javax.faces.FacesException;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
+import jakarta.faces.FacesException;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
 
 import org.skyve.CORE;
 import org.skyve.impl.domain.messages.SecurityException;

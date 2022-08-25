@@ -2,9 +2,9 @@ package org.skyve.impl.web.spring;
 
 import java.io.IOException;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.skyve.impl.util.UtilImpl;
 import org.skyve.util.Util;
@@ -22,7 +22,7 @@ import org.springframework.security.web.savedrequest.SavedRequest;
  * Also, if Skyve is running behind a TLS terminating proxy server then the request will need to be doctored.
  * @author mike
  */
-public class SkyveAuthenticationSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
+public class SkyveAuthenticationSuccessHandler  extends SavedRequestAwareAuthenticationSuccessHandler {
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request,
 											HttpServletResponse response,

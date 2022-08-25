@@ -20,7 +20,7 @@
 		<job name="jAvailableDiskSpaceAlarm" displayName="Available Disk Space Alarm" className="modules.admin.Configuration.AvailableDiskSpaceAlarmJob"/>
 	</jobs>
 	<documents>
-		<document ref="Audit" defaultQueryName="qAudits" />
+ 		<document ref="Audit" defaultQueryName="qAudits" />
 		<document ref="ChangePassword" />
 		<document ref="Communication" defaultQueryName="qCommunications" />
 		<document ref="CommunicationTemplate" defaultQueryName="qCommunicationTemplate"/>
@@ -53,7 +53,7 @@
 		<document ref="SelfRegistrationActivation" />
 		<document ref="Snapshot" defaultQueryName="qSnapshots" />
 		<document ref="Startup"/>
-		<document ref="Subscription"/>
+ 		<document ref="Subscription"/>
 		<document ref="SystemDashboard" />
 		<document ref="Tag" defaultQueryName="qTags" />
 		<document ref="Tagged" />

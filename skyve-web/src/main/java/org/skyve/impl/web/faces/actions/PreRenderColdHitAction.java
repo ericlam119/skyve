@@ -1,7 +1,7 @@
 package org.skyve.impl.web.faces.actions;
 
-import javax.faces.context.FacesContext;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.faces.context.FacesContext;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.skyve.CORE;
 import org.skyve.domain.Bean;

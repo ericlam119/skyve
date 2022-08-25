@@ -2,7 +2,7 @@ package org.skyve.impl.web.faces.pipeline.component;
 
 import java.util.List;
 
-import javax.faces.component.UIComponent;
+import jakarta.faces.component.UIComponent;
 
 import org.skyve.domain.Bean;
 import org.skyve.domain.types.converters.Converter;
@@ -731,7 +731,7 @@ public class ComponentBuilderChain extends ComponentBuilder {
 											String formDisabledConditionName,
 											String title,
 											boolean required,
-											javax.faces.convert.Converter facesConverter) {
+											jakarta.faces.convert.Converter facesConverter) {
 		EventSourceComponent result = component;
 		for (ComponentBuilder builder : builders) {
 			result = builder.spinner(result, dataWidgetVar, spinner, formDisabledConditionName, title, required, facesConverter);
@@ -764,7 +764,7 @@ public class ComponentBuilderChain extends ComponentBuilder {
 										Integer length,
 										Converter<?> converter,
 										Format<?> format,
-										javax.faces.convert.Converter facesConverter) {
+										jakarta.faces.convert.Converter facesConverter) {
 		EventSourceComponent result = component;
 		for (ComponentBuilder builder : builders) {
 			result = builder.text(result,

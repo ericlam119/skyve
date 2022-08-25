@@ -2,7 +2,7 @@ package org.skyve.impl.persistence;
 
 import java.util.Collection;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import org.skyve.CORE;
 import org.skyve.domain.Bean;

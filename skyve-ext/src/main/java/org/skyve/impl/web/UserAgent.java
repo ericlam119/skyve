@@ -4,8 +4,8 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.skyve.CORE;
 import org.skyve.domain.messages.DomainException;

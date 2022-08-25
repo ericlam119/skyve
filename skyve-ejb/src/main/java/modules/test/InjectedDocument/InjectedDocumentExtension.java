@@ -2,7 +2,7 @@ package modules.test.InjectedDocument;
 
 import java.util.Map;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import org.skyve.metadata.customer.Customer;
 import org.skyve.metadata.repository.Repository;

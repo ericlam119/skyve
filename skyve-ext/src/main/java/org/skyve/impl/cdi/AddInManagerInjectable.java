@@ -2,7 +2,7 @@ package org.skyve.impl.cdi;
 
 import java.io.Serializable;
 
-import javax.enterprise.inject.Alternative;
+import jakarta.enterprise.inject.Alternative;
 
 import org.skyve.EXT;
 import org.skyve.addin.AddInManager;

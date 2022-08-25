@@ -3,7 +3,7 @@ package org.skyve.impl.cdi;
 import java.util.Collection;
 import java.util.List;
 
-import javax.enterprise.inject.Alternative;
+import jakarta.enterprise.inject.Alternative;
 
 import org.skyve.CORE;
 import org.skyve.domain.Bean;

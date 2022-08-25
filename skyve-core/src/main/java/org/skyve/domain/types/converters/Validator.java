@@ -1,6 +1,6 @@
 package org.skyve.domain.types.converters;
 
-import javax.xml.bind.annotation.XmlTransient;
+import jakarta.xml.bind.annotation.XmlTransient;
 
 import org.skyve.domain.messages.ValidationException;
 import org.skyve.metadata.user.User;

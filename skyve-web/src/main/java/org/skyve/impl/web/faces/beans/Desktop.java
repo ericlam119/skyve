@@ -5,10 +5,10 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.TreeSet;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
-import javax.faces.context.FacesContext;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.faces.bean.ManagedBean;
+import jakarta.faces.bean.RequestScoped;
+import jakarta.faces.context.FacesContext;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.skyve.CORE;
 import org.skyve.impl.metadata.module.menu.CalendarItem;

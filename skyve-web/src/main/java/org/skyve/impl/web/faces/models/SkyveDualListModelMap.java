@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import javax.faces.FacesException;
+import jakarta.faces.FacesException;
 
 import org.primefaces.model.DualListModel;
 import org.skyve.CORE;

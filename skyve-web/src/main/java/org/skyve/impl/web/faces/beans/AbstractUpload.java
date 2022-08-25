@@ -2,9 +2,9 @@ package org.skyve.impl.web.faces.beans;
 
 import java.util.regex.Pattern;
 
-import javax.faces.application.FacesMessage;
-import javax.faces.bean.ManagedProperty;
-import javax.faces.context.FacesContext;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.bean.ManagedProperty;
+import jakarta.faces.context.FacesContext;
 
 import org.primefaces.model.file.UploadedFile;
 import org.skyve.impl.util.UtilImpl;

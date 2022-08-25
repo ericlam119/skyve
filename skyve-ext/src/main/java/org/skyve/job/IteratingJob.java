@@ -2,7 +2,7 @@ package org.skyve.job;
 
 import java.util.Collection;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import org.skyve.persistence.Persistence;
 import org.slf4j.Logger;

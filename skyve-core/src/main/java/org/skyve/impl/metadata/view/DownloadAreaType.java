@@ -1,6 +1,6 @@
 package org.skyve.impl.metadata.view;
 
-import javax.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.XmlType;
 
 import org.skyve.impl.util.XMLMetaData;
 

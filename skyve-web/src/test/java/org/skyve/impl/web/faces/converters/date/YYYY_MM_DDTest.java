@@ -1,6 +1,6 @@
 package org.skyve.impl.web.faces.converters.date;
 
-import javax.faces.convert.ConverterException;
+import jakarta.faces.convert.ConverterException;
 
 import org.junit.Assert;
 import org.junit.Test;

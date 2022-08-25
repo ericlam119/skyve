@@ -3,8 +3,8 @@ package org.skyve.impl.cdi;
 import java.io.Serializable;
 import java.util.Map;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Produces;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Produces;
 
 import org.skyve.addin.AddInManager;
 import org.skyve.cache.Caching;

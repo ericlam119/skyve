@@ -1,8 +1,8 @@
 package org.skyve.impl.metadata.model.document.field;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlTransient;
+import jakarta.xml.bind.annotation.XmlType;
 
 import org.skyve.domain.types.converters.Converter;
 import org.skyve.impl.util.XMLMetaData;

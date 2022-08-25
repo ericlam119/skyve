@@ -1,7 +1,7 @@
 package org.skyve.impl.web.faces;
 
-import javax.faces.context.ExceptionHandler;
-import javax.faces.context.ExceptionHandlerFactory;
+import jakarta.faces.context.ExceptionHandler;
+import jakarta.faces.context.ExceptionHandlerFactory;
 
 public class SkyveExceptionHandlerFactory extends ExceptionHandlerFactory {
 	private ExceptionHandlerFactory base;

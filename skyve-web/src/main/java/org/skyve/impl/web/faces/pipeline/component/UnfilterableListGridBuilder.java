@@ -1,6 +1,6 @@
 package org.skyve.impl.web.faces.pipeline.component;
 
-import javax.faces.component.UIComponent;
+import jakarta.faces.component.UIComponent;
 
 import org.primefaces.component.column.Column;
 import org.skyve.domain.Bean;

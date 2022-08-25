@@ -11,11 +11,10 @@ import java.util.Date;
 import org.hibernate.HibernateException;
 import org.hibernate.dialect.Dialect;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
-import org.hibernate.type.LiteralType;
 import org.hibernate.usertype.UserType;
 import org.skyve.domain.types.DateTime;
 
-public class DateTimeUserType implements UserType, LiteralType<Date>, Serializable {
+public class DateTimeUserType implements UserType,  Serializable {
 	private static final long serialVersionUID = 4767832769224136166L;
 
 	@Override
@@ -64,6 +63,7 @@ public class DateTimeUserType implements UserType, LiteralType<Date>, Serializab
 		return Long.valueOf(ts.getTime() / 1000).hashCode();
 	}
 
+	
 	@Override
 	public Object nullSafeGet(ResultSet rs, String[] names, SharedSessionContractImplementor session, Object owner)
 	throws HibernateException, SQLException {
@@ -115,7 +115,7 @@ public class DateTimeUserType implements UserType, LiteralType<Date>, Serializab
 		return original;
 	}
 
-	@Override
+
 	public String objectToSQLString(Date value, Dialect dialect) 
 	throws Exception {
 		return (value == null) ? "NULL" : '\'' + new Timestamp(value.getTime()).toString() + '\'';

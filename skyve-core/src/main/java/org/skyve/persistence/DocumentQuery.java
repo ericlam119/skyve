@@ -1,6 +1,6 @@
 package org.skyve.persistence;
 
-import javax.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.XmlType;
 
 import org.skyve.domain.DynamicBean;
 import org.skyve.impl.util.XMLMetaData;

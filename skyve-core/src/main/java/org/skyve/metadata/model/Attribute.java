@@ -2,7 +2,7 @@ package org.skyve.metadata.model;
 
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.XmlType;
 
 import org.locationtech.jts.geom.Geometry;
 import org.skyve.domain.Bean;

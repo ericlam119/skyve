@@ -2,7 +2,7 @@ package org.skyve.impl.web.faces.pipeline.layout;
 
 import java.util.List;
 
-import javax.faces.component.UIComponent;
+import jakarta.faces.component.UIComponent;
 
 import org.skyve.impl.metadata.Container;
 import org.skyve.impl.metadata.view.container.HBox;

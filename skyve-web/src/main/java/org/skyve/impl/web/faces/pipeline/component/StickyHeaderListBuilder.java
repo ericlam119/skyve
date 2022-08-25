@@ -2,7 +2,7 @@ package org.skyve.impl.web.faces.pipeline.component;
 
 import java.util.List;
 
-import javax.faces.component.UIComponent;
+import jakarta.faces.component.UIComponent;
 
 import org.primefaces.component.datatable.DataTable;
 import org.skyve.domain.Bean;

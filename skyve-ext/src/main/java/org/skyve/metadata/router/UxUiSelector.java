@@ -1,7 +1,7 @@
 package org.skyve.metadata.router;
 
 import javax.annotation.Nonnull;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.skyve.impl.metadata.repository.router.TaggingUxUiSelector;
 import org.skyve.web.UserAgentType;

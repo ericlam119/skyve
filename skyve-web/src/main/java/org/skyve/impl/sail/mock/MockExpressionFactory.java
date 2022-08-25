@@ -1,9 +1,9 @@
 package org.skyve.impl.sail.mock;
 
-import javax.el.ELContext;
-import javax.el.ExpressionFactory;
-import javax.el.MethodExpression;
-import javax.el.ValueExpression;
+import jakarta.el.ELContext;
+import jakarta.el.ExpressionFactory;
+import jakarta.el.MethodExpression;
+import jakarta.el.ValueExpression;
 
 public class MockExpressionFactory extends ExpressionFactory {
 	@Override

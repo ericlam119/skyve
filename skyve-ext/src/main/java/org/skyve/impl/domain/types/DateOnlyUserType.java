@@ -12,15 +12,15 @@ import org.hibernate.HibernateException;
 import org.hibernate.dialect.Dialect;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.type.CalendarDateType;
-import org.hibernate.type.LiteralType;
 import org.hibernate.usertype.UserType;
 import org.skyve.domain.types.DateOnly;
 
-public class DateOnlyUserType implements UserType, LiteralType<Date>, Serializable {
+public class DateOnlyUserType implements UserType, Serializable {
 	private static final long serialVersionUID = 4351232657679942727L;
 
 	@Override
 	public int[] sqlTypes() {
+		
 		return new int[] {Types.DATE};
 	}
 
@@ -113,9 +113,9 @@ public class DateOnlyUserType implements UserType, LiteralType<Date>, Serializab
 		return original;
 	}
 
-	@Override
 	public String objectToSQLString(Date value, Dialect dialect) 
 	throws Exception {
 		return (value == null) ? "NULL" : '\'' + new Date(value.getTime()).toString() + '\'';
 	}
+
 }

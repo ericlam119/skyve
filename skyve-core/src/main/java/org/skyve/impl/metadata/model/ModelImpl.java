@@ -52,6 +52,7 @@ public abstract class ModelImpl extends AbstractMetaDataMap implements Model {
 
 	@Override
 	public @Nonnull String getOwningModuleName() {
+		
 		return owningModuleName;
 	}
 

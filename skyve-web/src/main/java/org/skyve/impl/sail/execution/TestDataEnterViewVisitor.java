@@ -3,7 +3,7 @@ package org.skyve.impl.sail.execution;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.faces.model.SelectItem;
+import jakarta.faces.model.SelectItem;
 
 import org.skyve.domain.Bean;
 import org.skyve.impl.bind.BindUtil;

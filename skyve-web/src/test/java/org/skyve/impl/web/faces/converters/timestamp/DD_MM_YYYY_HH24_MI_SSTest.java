@@ -3,7 +3,7 @@ package org.skyve.impl.web.faces.converters.timestamp;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
 
-import javax.faces.convert.ConverterException;
+import jakarta.faces.convert.ConverterException;
 
 import org.junit.Before;
 import org.junit.Test;

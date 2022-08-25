@@ -2,8 +2,8 @@ package org.skyve.impl.web.faces.actions;
 
 import java.util.Stack;
 
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
 
 import org.apache.commons.lang3.StringUtils;
 import org.primefaces.PrimeFaces;
