@@ -26,18 +26,32 @@ public class TFAConfigurationSingleton {
 		return instance;
 	}
 	
-	public static boolean isPushTfa(TwoFactorCustomerConfiguration tfaConfig) {
+	private static boolean isTfaPush(TwoFactorCustomerConfiguration tfaConfig) {
 		if (tfaConfig == null) {
 			return false;
 		}
 		return tfaConfig.isTfaEmail();
 	}
 	
-	public boolean isPushTfa(String customer) {
+	private static boolean isTfaTOTP(TwoFactorCustomerConfiguration tfaConfig) {
+		if (tfaConfig == null) {
+			return false;
+		}
+		return tfaConfig.isTfaTOTP();
+	}
+	
+	public boolean isTfaPush(String customer) {
 		if (customer == null) {
 			return false;
 		}
-		return isPushTfa(getConfig(customer));
+		return isTfaPush(getConfig(customer));
+	}
+	
+	public boolean isTfaTOTP(String customer) {
+		if (customer == null) {
+			return false;
+		}
+		return isTfaTOTP(getConfig(customer));
 	}
 	
 	

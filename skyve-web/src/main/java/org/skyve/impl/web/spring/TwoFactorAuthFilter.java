@@ -1,7 +1,14 @@
 package org.skyve.impl.web.spring;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.security.SecureRandom;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.UUID;
 
@@ -12,6 +19,8 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.codec.binary.Base32;
+import org.apache.commons.codec.binary.Hex;
 import org.skyve.EXT;
 import org.skyve.domain.messages.DomainException;
 import org.skyve.domain.types.DateTime;
@@ -19,6 +28,7 @@ import org.skyve.domain.types.Timestamp;
 import org.skyve.impl.util.TFAConfigurationSingleton;
 import org.skyve.impl.util.TwoFactorCustomerConfiguration;
 import org.skyve.impl.util.UtilImpl;
+import org.skyve.util.Mail;
 import org.springframework.security.authentication.AccountExpiredException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -28,9 +38,23 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationFa
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-public abstract class TwoFactorAuthPushFilter extends UsernamePasswordAuthenticationFilter {
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.WriterException;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
+
+import de.taimos.totp.TOTP;
+
+public class TwoFactorAuthFilter  extends UsernamePasswordAuthenticationFilter {
 	private static final AntPathRequestMatcher DEFAULT_LOGIN_ATTEMPT_ANT_PATH_REQUEST_MATCHER = new AntPathRequestMatcher("/loginAttempt", "POST");
 
+	private static final String TFA_CODE_KEY = "{tfaCode}"; 
+	
+	public static final String SYSTEM_TWO_FACTOR_CODE_SUBJECT = "Please verify your email security code";
+	public static final String SYSTEM_TWO_FACTOR_CODE_BODY = "Hi,<br /><br />Your verification code is: {tfaCode}<br />"; 
+	
+	
 	public static final String SKYVE_SECURITY_FORM_CUSTOMER_KEY = "customer";
 	
 	public static String TWO_FACTOR_TOKEN_ATTRIBUTE = "tfaToken";
@@ -43,8 +67,10 @@ public abstract class TwoFactorAuthPushFilter extends UsernamePasswordAuthentica
 	public static String REMEMBER_PARAMETER = "remember";
 	
 	private UserDetailsManager userDetailsManager;
+	
+	private boolean failAuthentication = false;
 
-	public TwoFactorAuthPushFilter(UserDetailsManager userDetailsManager) {
+	public TwoFactorAuthFilter(UserDetailsManager userDetailsManager) {
 		setRequiresAuthenticationRequestMatcher(DEFAULT_LOGIN_ATTEMPT_ANT_PATH_REQUEST_MATCHER);
 		this.userDetailsManager = userDetailsManager;
 	}
@@ -55,15 +81,28 @@ public abstract class TwoFactorAuthPushFilter extends UsernamePasswordAuthentica
 		HttpServletRequest request = (HttpServletRequest) iRequest;
 		HttpServletResponse response = (HttpServletResponse) iResponse;
 		
-		if (skipPushFilter(request, response)) {
+		String customerName = obtainCustomer(request);
+		
+		if (skipTFAFilter(request, response)) {
 			chain.doFilter(request, response);
 			return;
 		}
 		
-		doFilter(request, response, chain);
+		
+		if (TFAConfigurationSingleton.getInstance().isTfaPush(customerName)) {
+			doPushFilter(request, response, chain);
+			return;
+		} else if (TFAConfigurationSingleton.getInstance().isTfaTOTP(customerName)) {
+			doTOTPFilter(request, response, chain);
+			return;
+		}
+		
+		
+		chain.doFilter(request, response);
 	}
 
-	protected boolean skipPushFilter(HttpServletRequest request, HttpServletResponse response) {
+	
+	protected boolean skipTFAFilter(HttpServletRequest request, HttpServletResponse response) {
 		// No two factor customers defined
 		if (UtilImpl.TFA_CUSTOMER == null) {
 			return true;
@@ -75,7 +114,6 @@ public abstract class TwoFactorAuthPushFilter extends UsernamePasswordAuthentica
 		}
 		
 		String customerName = obtainCustomer(request);
-		
 		if (!UtilImpl.TFA_CUSTOMER.contains(customerName)) {
 			return true;
 		}
@@ -95,10 +133,10 @@ public abstract class TwoFactorAuthPushFilter extends UsernamePasswordAuthentica
 			return true;
 		}
 				
-		return !TFAConfigurationSingleton.getInstance().isTfaPush(customerName);
+		return false;
 	}
-
-	private void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain) 
+	
+	private void doPushFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain) 
 	throws IOException, ServletException{
 		String twoFactorToken = UtilImpl.processStringValue(request.getParameter(TWO_FACTOR_TOKEN_ATTRIBUTE));
 		if (twoFactorToken != null) {
@@ -112,7 +150,7 @@ public abstract class TwoFactorAuthPushFilter extends UsernamePasswordAuthentica
 		
 		// if it gets to here, there is no two factor token.
 		// take the opportunity in this method to clear the old TFA details if they exist;
-		if ( TFAConfigurationSingleton.getInstance().getConfig(obtainCustomer(request)).isTfaEmail()) {
+		if ( TFAConfigurationSingleton.getInstance().getConfig(obtainCustomer(request)).isTfaEmail() ) {
 			boolean stopSecFilterChain = doPushNotificationProcess(request, response);
 			
 			if (! stopSecFilterChain) {
@@ -122,6 +160,86 @@ public abstract class TwoFactorAuthPushFilter extends UsernamePasswordAuthentica
 		}
 
 		chain.doFilter(request, response);
+	}
+	
+	private void doTOTPFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain) 
+	throws IOException, ServletException{
+		String username = obtainUsername(request);
+		UserTFA user = getUserDB(username);
+		
+		//TBD currently use the exisitng logic, dont bother checking the token
+		// if token exists, user is coming in from TOTP entry page
+		// if no token, send paramters back to show user TOTP token entry page.
+		String twoFactorToken = UtilImpl.processStringValue(request.getParameter(TWO_FACTOR_TOKEN_ATTRIBUTE));
+		if (twoFactorToken == null) {
+			
+			// save previous selected remember me token so it can be sent back
+			boolean rememberMe = request.getParameter(REMEMBER_PARAMETER) != null;
+			
+			TwoFactorAuthenticationForwardHandler handler = new TwoFactorAuthenticationForwardHandler("/login");
+
+			request.setAttribute(CUSTOMER_ATTRIBUTE, user.getCustomer());
+			request.setAttribute(TWO_FACTOR_TOKEN_ATTRIBUTE,  user.getTfaToken());
+			request.setAttribute(USER_ATTRIBUTE, user.getUser());
+			request.setAttribute(REMEMBER_ATTRIBUTE, Boolean.valueOf(rememberMe));
+			handler.onAuthenticationFailure(request, response, new TwoFactorAuthRequiredException("OTP sent", false));
+			return ;
+		}
+		
+		
+		
+		// if it gets to here, there is no two factor token.
+		// take the opportunity in this method to clear the old TFA details if they exist;
+		if ( TFAConfigurationSingleton.getInstance().getConfig(obtainCustomer(request)).isTfaTOTP() ) {
+			if( checkTOTPCode(request, response) ) {
+			
+				// this is here so we can use the default # of login attempts and waits
+				try {
+					this.failAuthentication = true;
+					attemptAuthentication(request, response);
+				}
+				catch (@SuppressWarnings("unused") AuthenticationException e) {
+					this.failAuthentication = false;
+					// throws error if authentication failed, catch so we want to handle it
+					UtilImpl.LOGGER.info("Provided TFA code does not match."); 
+					TwoFactorAuthenticationForwardHandler handler = new TwoFactorAuthenticationForwardHandler("/login");
+					
+					request.setAttribute(CUSTOMER_ATTRIBUTE, user.getCustomer());
+					request.setAttribute(TWO_FACTOR_TOKEN_ATTRIBUTE,  "notnull");
+					request.setAttribute(USER_ATTRIBUTE, user.getUser());
+					handler.onAuthenticationFailure(request, response, new TwoFactorAuthRequiredException("OTP sent", true));
+					return;
+				}
+			}
+			
+			// totp code correct continue on
+			chain.doFilter(request, response);
+			return;
+		}
+
+		chain.doFilter(request, response);
+	}
+	
+	
+	
+	@Override
+	protected String obtainPassword(HttpServletRequest request) {
+		
+		String pwd =  UtilImpl.processStringValue(super.obtainPassword(request));
+		if (failAuthentication) {
+			pwd = pwd + String.valueOf(Math.random());
+		}
+		return pwd;
+	}
+
+	private boolean checkTOTPCode(HttpServletRequest request, HttpServletResponse response) {
+		// get this as a query from user
+		String secretKey = "OIOO6UNMFDDM7D5YYKCBJZR4AX3IKO5H";
+		String twoFactorToken = UtilImpl.processStringValue(request.getParameter(TWO_FACTOR_TOKEN_ATTRIBUTE));
+		
+		String code = getTOTPCode(secretKey);
+		
+		return code.equals(twoFactorToken);
 	}
 	
 	/**
@@ -269,10 +387,37 @@ public abstract class TwoFactorAuthPushFilter extends UsernamePasswordAuthentica
 		return customerName;
 	}
 	
-	/**
-	 * send the push notification
-	 */
-	protected abstract void pushNotification(UserTFA user, String code);
+	protected void pushNotification(UserTFA user, String code) {
+		String emailAddress = user.getEmail();
+		if (emailAddress == null) {
+			UtilImpl.LOGGER.warning("No email found for user : " + user.getUsername()); 
+			return;
+		}
+		
+		String emailSubjectDB = null;
+		String emailBodyDB = null;
+		try (Connection c = EXT.getDataStoreConnection()) {
+			try (PreparedStatement s = c.prepareStatement("select twoFactorEmailSubject, twoFactorEmailBody from ADM_Configuration where bizCustomer = ?")) {
+				s.setString(1, user.getCustomer());
+				try (ResultSet rs = s.executeQuery()) {
+					if (rs.next()) {
+						emailSubjectDB = rs.getString(1);
+						emailBodyDB = rs.getString(2);
+					}
+				}
+			}
+		}
+		catch (SQLException e) {
+			throw new DomainException("Failed to get Configuration email template", e);
+		}
+		
+		String emailBody = (emailBodyDB == null) ? SYSTEM_TWO_FACTOR_CODE_BODY : emailBodyDB;
+		String emailSubject = (emailSubjectDB == null) ? SYSTEM_TWO_FACTOR_CODE_SUBJECT : emailSubjectDB;
+		EXT.sendMail(new Mail().addTo(emailAddress)
+								.from(UtilImpl.SMTP_SENDER)
+								.subject(emailSubject)
+								.body(emailBody.replace(TFA_CODE_KEY, code)));
+	}
 	
 	/**
 	 * Get the user details required for this filter
@@ -300,7 +445,7 @@ public abstract class TwoFactorAuthPushFilter extends UsernamePasswordAuthentica
 	protected void updateUserTFADetails(UserTFA user) {
 		userDetailsManager.updateUser(user);
 	}
-	
+
 	@SuppressWarnings("static-method")
 	protected String generateTFAPushId(Timestamp generatedTS) {
 		return UUID.randomUUID().toString() + "-" + Long.toString(generatedTS.getTime());
@@ -368,6 +513,78 @@ public abstract class TwoFactorAuthPushFilter extends UsernamePasswordAuthentica
 		return ((user.getTfaCode() != null) &&
 				(user.getTfaToken() != null) &&
 				(user.getTfaCodeGeneratedTimestamp() != null));
+	}
+	
+
+	public static void main (String [] args) {
+		System.out.println(generateSecretKey());
+		String secretKey = "OIOO6UNMFDDM7D5YYKCBJZR4AX3IKO5H";
+		String company = "bizhub";
+		String username = "eric.lam@bizhub.com.au";
+		
+		String code = getGoogleAuthenticatorBarCode(secretKey, company, username);
+
+//		printCode(secretKey);
+		try {
+			createQRCode(code, "C:\\code\\code.png", 300, 300);
+		} catch (WriterException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		printCode(secretKey);
+	}
+	
+	public static void createQRCode(String barCodeData, String filePath, int height, int width) throws WriterException, IOException {
+	    BitMatrix matrix = new MultiFormatWriter().encode(barCodeData, BarcodeFormat.QR_CODE, width, height);
+	    try (FileOutputStream out = new FileOutputStream(filePath)) {
+	        MatrixToImageWriter.writeToStream(matrix, "png", out);
+	    }
+	}
+	
+	public static void printCode(String secretKey) {
+		String lastCode = null;
+		while (true) {
+		    String code = getTOTPCode(secretKey);
+		    if (!code.equals(lastCode)) {
+		        System.out.println(code);
+		    }
+		    lastCode = code;
+		    try {
+		        Thread.sleep(1000);
+		    } catch (InterruptedException e) {};
+		}
+	}
+	
+		
+	public static String  generateSecretKey() {
+	    SecureRandom random = new SecureRandom();
+	    byte[] bytes = new byte[20];
+	    random.nextBytes(bytes);
+	    Base32 base32 = new Base32();
+	    return base32.encodeToString(bytes);
+	    
+	}
+	
+	public static String getTOTPCode(String secretKey) {
+	    Base32 base32 = new Base32();
+	    byte[] bytes = base32.decode(secretKey);
+	    String hexKey = Hex.encodeHexString(bytes);
+	    return TOTP.getOTP(hexKey);
+	}
+	
+	public static String getGoogleAuthenticatorBarCode(String secretKey, String account, String issuer) {
+	    try {
+	        return "otpauth://totp/"
+	                + URLEncoder.encode(issuer + ":" + account, "UTF-8").replace("+", "%20")
+	                + "?secret=" + URLEncoder.encode(secretKey, "UTF-8").replace("+", "%20")
+	                + "&issuer=" + URLEncoder.encode(issuer, "UTF-8").replace("+", "%20");
+	    } catch (UnsupportedEncodingException e) {
+	        throw new IllegalStateException(e);
+	    }
 	}
 	
 }

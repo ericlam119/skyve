@@ -90,6 +90,7 @@
 			<values>
 				<value code="OFF" description="Off" />
 				<value code="EMAIL" description="Email"/>
+				<value code="TOTP" description="Authenticator Apps"/>
 			</values>
 		</enum>
 		<integer name="twofactorPushCodeTimeOutSeconds">

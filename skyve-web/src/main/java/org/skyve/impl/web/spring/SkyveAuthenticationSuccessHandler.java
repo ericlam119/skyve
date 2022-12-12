@@ -80,7 +80,7 @@ public class SkyveAuthenticationSuccessHandler extends SavedRequestAwareAuthenti
 		UserTFA principal = (UserTFA) authentication.getPrincipal();
 		String customerName = principal.getCustomer();
 		if ((userDetailsManager != null) && (customerName != null)) {
-			if(  TFAConfigurationSingleton.getInstance().isPushTfa(customerName) ) {
+			if(  TFAConfigurationSingleton.getInstance().isTfaPush(customerName) ) {
 				cleanupTFACodes(principal);
 			}
 		}

@@ -90,12 +90,13 @@ public class SkyveSpringSecurity {
 	private boolean useTFAPushCodeAsPassword(Timestamp createdTimestamp, String customer) throws SQLException {
 		
 		
-		TwoFactorCustomerConfiguration config = TFAConfigurationSingleton.getInstance().getConfig(customer);
 		
-		if (config == null || createdTimestamp == null || (! TFAConfigurationSingleton.isPushTfa(config) )) {
+		
+		if (createdTimestamp == null || (! TFAConfigurationSingleton.getInstance().isTfaPush(customer) )) {
 			return false;
 		}
 		
+		TwoFactorCustomerConfiguration config = TFAConfigurationSingleton.getInstance().getConfig(customer);
 		long expiryMillis = config.getTfaTimeOutSeconds() * 1000;
 		
 		long generatedTime = createdTimestamp.getTime();

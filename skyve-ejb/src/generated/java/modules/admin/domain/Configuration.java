@@ -228,7 +228,8 @@ public abstract class Configuration extends AbstractPersistentBean {
 	@XmlEnum
 	public static enum TwoFactorType implements Enumeration {
 		off("OFF", "Off"),
-		email("EMAIL", "Email");
+		email("EMAIL", "Email"),
+		authenticatorApps("TOTP", "Authenticator Apps");
 
 		private String code;
 		private String description;

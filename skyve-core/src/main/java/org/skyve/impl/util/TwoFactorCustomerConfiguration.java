@@ -36,4 +36,8 @@ public class TwoFactorCustomerConfiguration implements java.io.Serializable {
 	public boolean isTfaEmail() {
 		return "EMAIL".equals(tfaType);
 	}
+	
+	public boolean isTfaTOTP() {
+		return "TOTP".equals(tfaType);
+	}
 }
