@@ -40,8 +40,43 @@
 			</item>
 		</row>
 	</form>
+	
+	<form border="true" percentageWidth="60" responsiveWidth="12">
+		<column percentageWidth="30" responsiveWidth="3" />
+		<column />
+		<column percentageWidth="30" responsiveWidth="3" />
+		<row>
+			<item>
+				<default binding="tfaTOTPSeed" />
+			</item>
+			<item>
+				<button action="ViewSeed"/>
+			</item>
+		</row>
+		<row>
+			<item>
+				<textField binding="newtfaTOTPSeed" enabled="false"/>
+			</item>
+			<item>
+				<button action="GenerateTotpSeed"/>
+			</item>
+		</row>
+		<row>
+			<item>
+				<spacer />
+			</item>
+			<item>
+				<button action="UpdateTotpSeed"/>
+			</item>
+		</row>
+	</form>
+	
 	<actions>
 		<action className="MakePasswordChange" displayName="admin.changePassword.actions.makePasswordChange.displayName" toolTip="admin.changePassword.actions.makePasswordChange.toolTip"
 			relativeIconFileName="icons/document/password16.png" iconStyleClass="fa fa-lock" inActionPanel="false" />
+			
+		<action className="ViewSeed" clientValidation="false" displayName="View Seed" iconStyleClass="fa fa-lock" inActionPanel="false" />
+		<action className="UpdateTotpSeed" clientValidation="false" displayName="Save New Seed" iconStyleClass="fa fa-lock" inActionPanel="false" />
+		<action className="GenerateTotpSeed" clientValidation="false" displayName="Generate New Seed" iconStyleClass="fa fa-lock" inActionPanel="false" />
 	</actions>
 </view>

@@ -117,6 +117,7 @@ public class TwoFactorAuthFilter  extends AbstractTwoFactorAuthFilter {
 		
 		String code = getGoogleAuthenticatorBarCode(secretKey, company, username);
 
+		System.out.println(code);
 		try {
 			createQRCode(code, "C:\\code\\code.png", 300, 300);
 		} catch (WriterException e) {
@@ -127,7 +128,7 @@ public class TwoFactorAuthFilter  extends AbstractTwoFactorAuthFilter {
 			e.printStackTrace();
 		}
 		
-		printCode(secretKey);
+		//printCode(secretKey);
 	}
 	
 	public static void createQRCode(String barCodeData, String filePath, int height, int width) throws WriterException, IOException {

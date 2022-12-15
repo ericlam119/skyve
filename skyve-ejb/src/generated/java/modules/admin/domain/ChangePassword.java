@@ -40,6 +40,12 @@ public class ChangePassword extends AbstractTransientBean {
 	/** @hidden */
 	public static final String responsePropertyName = "response";
 
+	/** @hidden */
+	public static final String tfaTOTPSeedPropertyName = "tfaTOTPSeed";
+
+	/** @hidden */
+	public static final String newtfaTOTPSeedPropertyName = "newtfaTOTPSeed";
+
 	/**
 	 * Old Password
 	 * <br/>
@@ -68,6 +74,16 @@ public class ChangePassword extends AbstractTransientBean {
 	 * Response
 	 **/
 	private String response;
+
+	/**
+	 * Two Factor Auth TOTP Seed
+	 **/
+	private String tfaTOTPSeed;
+
+	/**
+	 * New TOTP Seed
+	 **/
+	private String newtfaTOTPSeed;
 
 	@Override
 	@XmlTransient
@@ -180,5 +196,41 @@ public class ChangePassword extends AbstractTransientBean {
 	public void setResponse(String response) {
 		preset(responsePropertyName, response);
 		this.response = response;
+	}
+
+	/**
+	 * {@link #tfaTOTPSeed} accessor.
+	 * @return	The value.
+	 **/
+	public String getTfaTOTPSeed() {
+		return tfaTOTPSeed;
+	}
+
+	/**
+	 * {@link #tfaTOTPSeed} mutator.
+	 * @param tfaTOTPSeed	The new value.
+	 **/
+	@XmlElement
+	public void setTfaTOTPSeed(String tfaTOTPSeed) {
+		preset(tfaTOTPSeedPropertyName, tfaTOTPSeed);
+		this.tfaTOTPSeed = tfaTOTPSeed;
+	}
+
+	/**
+	 * {@link #newtfaTOTPSeed} accessor.
+	 * @return	The value.
+	 **/
+	public String getNewtfaTOTPSeed() {
+		return newtfaTOTPSeed;
+	}
+
+	/**
+	 * {@link #newtfaTOTPSeed} mutator.
+	 * @param newtfaTOTPSeed	The new value.
+	 **/
+	@XmlElement
+	public void setNewtfaTOTPSeed(String newtfaTOTPSeed) {
+		preset(newtfaTOTPSeedPropertyName, newtfaTOTPSeed);
+		this.newtfaTOTPSeed = newtfaTOTPSeed;
 	}
 }

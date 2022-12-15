@@ -91,6 +91,9 @@
 			<privileges>
 				<document name="ChangePassword" permission="_____">
 					<action name="MakePasswordChange" />
+					<action name="UpdateTotpSeed" />
+					<action name="GenerateTotpSeed" />
+					<action name="ViewSeed" />
 				</document>
 				<document name="Contact" permission="CRUDU" />
 				<document name="DynamicEntity" permission="CRUDD" />
@@ -132,6 +135,9 @@
 			<privileges>
 				<document name="ChangePassword" permission="_____">
 					<action name="MakePasswordChange" />
+					<action name="UpdateTotpSeed" />
+					<action name="GenerateTotpSeed" />
+					<action name="ViewSeed" />
 				</document>
 				<document name="Communication" permission="_R__C"/>
 				<document name="CommunicationTemplate" permission="_R__C"/>
@@ -179,6 +185,9 @@
 			<privileges>
 				<document name="ChangePassword" permission="_____">
 					<action name="MakePasswordChange" />
+					<action name="UpdateTotpSeed" />
+					<action name="GenerateTotpSeed" />
+					<action name="ViewSeed" />
 				</document>
 				<document name="Communication" permission="CRUDC">
 					<action name="AddUnsubscribeLink" />
@@ -205,6 +214,9 @@
 			<privileges>
 				<document name="ChangePassword" permission="_____">
 					<action name="MakePasswordChange" />
+					<action name="UpdateTotpSeed" />
+					<action name="GenerateTotpSeed" />
+					<action name="ViewSeed" />
 				</document>
 				<document name="Contact" permission="_R__C" />
 				<document name="Generic" permission="CRUDG"/>
@@ -215,6 +227,9 @@
 			<privileges>
 				<document name="ChangePassword" permission="_____">
 					<action name="MakePasswordChange" />
+					<action name="UpdateTotpSeed" />
+					<action name="GenerateTotpSeed" />
+					<action name="ViewSeed" />
 				</document>			
 				<document name="ControlPanel" permission="_____">
 					<action name="CacheStats" />
@@ -309,6 +324,9 @@
 			<privileges>
 				<document name="ChangePassword" permission="_____">
 					<action name="MakePasswordChange" />
+					<action name="UpdateTotpSeed" />
+					<action name="GenerateTotpSeed" />
+					<action name="ViewSeed" />
 				</document>
 				<document name="Generic" permission="CRUDG"/>
 				<document name="Job" permission="CRUDC">
@@ -334,6 +352,9 @@
 				</document>
 				<document name="ChangePassword" permission="_____">
 					<action name="MakePasswordChange" />
+					<action name="UpdateTotpSeed" />
+					<action name="GenerateTotpSeed" />
+					<action name="ViewSeed" />
 				</document>
 				<document name="Communication" permission="CRUDC">
 					<action name="AddUnsubscribeLink" />
@@ -406,6 +427,9 @@
 			<privileges>
 				<document name="ChangePassword" permission="_____">
 					<action name="MakePasswordChange" />
+					<action name="UpdateTotpSeed" />
+					<action name="GenerateTotpSeed" />
+					<action name="ViewSeed" />
 				</document>
 				<document name="Contact" permission="_R__C" />
 				<document name="DocumentNumber" permission="_R__C" />
