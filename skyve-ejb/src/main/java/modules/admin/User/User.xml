@@ -239,6 +239,11 @@
 			<displayName>Two Factor Token</displayName>
 			<length>100</length>
 		</text>
+		<text name="twoFactorTotpSeed" audited="false">
+			<documentation>Used to store the TOTP seed</documentation>
+			<displayName>TOTP Seed</displayName>
+			<length>100</length>
+		</text>
 	</attributes>
 	<conditions>
 		<!-- Evaluation of Wizard State -->

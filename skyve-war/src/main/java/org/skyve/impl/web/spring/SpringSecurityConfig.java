@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationEventPublisher;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -31,6 +32,10 @@ import org.springframework.security.web.authentication.rememberme.PersistentToke
 public class SpringSecurityConfig {
 	@Autowired
 	private SkyveSpringSecurity skyve;
+	
+	@Autowired
+	private AuthenticationEventPublisher eventPublisher;
+	
 	
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -136,7 +141,8 @@ public class SpringSecurityConfig {
 		
 		TwoFactorAuthFilter tfaAuth = new TwoFactorAuthFilter(userDetailsManager());
 		http.addFilterBefore(tfaAuth, UsernamePasswordAuthenticationFilter.class);
-
+		tfaAuth.setAuthenticationEventPublisher(eventPublisher);
+		
 		if ((UtilImpl.AUTHENTICATION_GOOGLE_CLIENT_ID != null) ||
 				(UtilImpl.AUTHENTICATION_FACEBOOK_CLIENT_ID != null) ||
 				(UtilImpl.AUTHENTICATION_GITHUB_CLIENT_ID != null)) {

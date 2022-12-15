@@ -157,6 +157,9 @@ public abstract class User extends AbstractPersistentBean implements org.skyve.d
 	/** @hidden */
 	public static final String twoFactorTokenPropertyName = "twoFactorToken";
 
+	/** @hidden */
+	public static final String twoFactorTotpSeedPropertyName = "twoFactorTotpSeed";
+
 	/**
 	 * Wizard State
 	 * <br/>
@@ -571,6 +574,13 @@ which are implied from the groups to which they belong.
 	 * Used to identify the user is in the same session for 2FA code entry, this is for the system
 	 **/
 	private String twoFactorToken;
+
+	/**
+	 * TOTP Seed
+	 * <br/>
+	 * Used to store the TOTP seed
+	 **/
+	private String twoFactorTotpSeed;
 
 	@Override
 	@XmlTransient
@@ -1436,6 +1446,24 @@ return modules.admin.User.UserBizlet.bizKey(this);
 	public void setTwoFactorToken(String twoFactorToken) {
 		preset(twoFactorTokenPropertyName, twoFactorToken);
 		this.twoFactorToken = twoFactorToken;
+	}
+
+	/**
+	 * {@link #twoFactorTotpSeed} accessor.
+	 * @return	The value.
+	 **/
+	public String getTwoFactorTotpSeed() {
+		return twoFactorTotpSeed;
+	}
+
+	/**
+	 * {@link #twoFactorTotpSeed} mutator.
+	 * @param twoFactorTotpSeed	The new value.
+	 **/
+	@XmlElement
+	public void setTwoFactorTotpSeed(String twoFactorTotpSeed) {
+		preset(twoFactorTotpSeedPropertyName, twoFactorTotpSeed);
+		this.twoFactorTotpSeed = twoFactorTotpSeed;
 	}
 
 	/**
