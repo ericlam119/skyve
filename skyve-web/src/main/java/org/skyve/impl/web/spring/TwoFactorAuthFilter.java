@@ -5,10 +5,6 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.security.SecureRandom;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.UUID;
 
@@ -21,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.codec.binary.Base32;
 import org.apache.commons.codec.binary.Hex;
+import org.omnifaces.el.functions.Strings;
 import org.skyve.EXT;
 import org.skyve.domain.messages.DomainException;
 import org.skyve.domain.types.DateTime;
@@ -28,13 +25,10 @@ import org.skyve.domain.types.Timestamp;
 import org.skyve.impl.util.TFAConfigurationSingleton;
 import org.skyve.impl.util.TwoFactorCustomerConfiguration;
 import org.skyve.impl.util.UtilImpl;
-import org.skyve.util.Mail;
-import org.springframework.security.authentication.AccountExpiredException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.provisioning.UserDetailsManager;
-import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
@@ -48,16 +42,13 @@ import de.taimos.totp.TOTP;
 
 public class TwoFactorAuthFilter  extends UsernamePasswordAuthenticationFilter {
 	private static final AntPathRequestMatcher DEFAULT_LOGIN_ATTEMPT_ANT_PATH_REQUEST_MATCHER = new AntPathRequestMatcher("/loginAttempt", "POST");
-
-	private static final String TFA_CODE_KEY = "{tfaCode}"; 
-	
-	public static final String SYSTEM_TWO_FACTOR_CODE_SUBJECT = "Please verify your email security code";
-	public static final String SYSTEM_TWO_FACTOR_CODE_BODY = "Hi,<br /><br />Your verification code is: {tfaCode}<br />"; 
-	
 	
 	public static final String SKYVE_SECURITY_FORM_CUSTOMER_KEY = "customer";
 	
-	public static String TWO_FACTOR_TOKEN_ATTRIBUTE = "tfaToken";
+	public static String TWO_FACTOR_PASSWORD_ATTRIBUTE = "tfaPassword";
+	public static String TWO_FACTOR_CODE_ATTRIBUTE = "tfaCode";
+	
+//	public static String TWO_FACTOR_TOKEN_ATTRIBUTE = "tfaToken";
 	public static String USER_ATTRIBUTE = "user"; 
 	public static String CUSTOMER_ATTRIBUTE = "customer";
 	
@@ -89,10 +80,7 @@ public class TwoFactorAuthFilter  extends UsernamePasswordAuthenticationFilter {
 		}
 		
 		
-		if (TFAConfigurationSingleton.getInstance().isTfaPush(customerName)) {
-			doPushFilter(request, response, chain);
-			return;
-		} else if (TFAConfigurationSingleton.getInstance().isTfaTOTP(customerName)) {
+		if (TFAConfigurationSingleton.getInstance().isTfaTOTP(customerName)) {
 			doTOTPFilter(request, response, chain);
 			return;
 		}
@@ -136,32 +124,7 @@ public class TwoFactorAuthFilter  extends UsernamePasswordAuthenticationFilter {
 		return false;
 	}
 	
-	private void doPushFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain) 
-	throws IOException, ServletException{
-		String twoFactorToken = UtilImpl.processStringValue(request.getParameter(TWO_FACTOR_TOKEN_ATTRIBUTE));
-		if (twoFactorToken != null) {
-			boolean stopSecFilterChain = doTFACodeCheckProcess(request,response);
-			
-			if (! stopSecFilterChain) {
-				chain.doFilter(request, response);
-			}
-			return;
-		}
-		
-		// if it gets to here, there is no two factor token.
-		// take the opportunity in this method to clear the old TFA details if they exist;
-		if ( TFAConfigurationSingleton.getInstance().getConfig(obtainCustomer(request)).isTfaEmail() ) {
-			boolean stopSecFilterChain = doPushNotificationProcess(request, response);
-			
-			if (! stopSecFilterChain) {
-				chain.doFilter(request, response);
-			}
-			return;
-		}
 
-		chain.doFilter(request, response);
-	}
-	
 	private void doTOTPFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain) 
 	throws IOException, ServletException{
 		String username = obtainUsername(request);
@@ -170,8 +133,8 @@ public class TwoFactorAuthFilter  extends UsernamePasswordAuthenticationFilter {
 		//TBD currently use the exisitng logic, dont bother checking the token
 		// if token exists, user is coming in from TOTP entry page
 		// if no token, send paramters back to show user TOTP token entry page.
-		String twoFactorToken = UtilImpl.processStringValue(request.getParameter(TWO_FACTOR_TOKEN_ATTRIBUTE));
-		if (twoFactorToken == null) {
+		String twoFactorCode = UtilImpl.processStringValue(request.getParameter(TWO_FACTOR_CODE_ATTRIBUTE));
+		if (twoFactorCode == null) {
 			
 			// save previous selected remember me token so it can be sent back
 			boolean rememberMe = request.getParameter(REMEMBER_PARAMETER) != null;
@@ -179,7 +142,8 @@ public class TwoFactorAuthFilter  extends UsernamePasswordAuthenticationFilter {
 			TwoFactorAuthenticationForwardHandler handler = new TwoFactorAuthenticationForwardHandler("/login");
 
 			request.setAttribute(CUSTOMER_ATTRIBUTE, user.getCustomer());
-			request.setAttribute(TWO_FACTOR_TOKEN_ATTRIBUTE,  user.getTfaToken());
+//			request.setAttribute(TWO_FACTOR_TOKEN_ATTRIBUTE,  "someNonNullToken");
+			request.setAttribute(TWO_FACTOR_PASSWORD_ATTRIBUTE,  super.obtainPassword(request));
 			request.setAttribute(USER_ATTRIBUTE, user.getUser());
 			request.setAttribute(REMEMBER_ATTRIBUTE, Boolean.valueOf(rememberMe));
 			handler.onAuthenticationFailure(request, response, new TwoFactorAuthRequiredException("OTP sent", false));
@@ -191,7 +155,7 @@ public class TwoFactorAuthFilter  extends UsernamePasswordAuthenticationFilter {
 		// if it gets to here, there is no two factor token.
 		// take the opportunity in this method to clear the old TFA details if they exist;
 		if ( TFAConfigurationSingleton.getInstance().getConfig(obtainCustomer(request)).isTfaTOTP() ) {
-			if( checkTOTPCode(request, response) ) {
+			if( !checkTOTPCode(request, response) ) {
 			
 				// this is here so we can use the default # of login attempts and waits
 				try {
@@ -205,9 +169,10 @@ public class TwoFactorAuthFilter  extends UsernamePasswordAuthenticationFilter {
 					TwoFactorAuthenticationForwardHandler handler = new TwoFactorAuthenticationForwardHandler("/login");
 					
 					request.setAttribute(CUSTOMER_ATTRIBUTE, user.getCustomer());
-					request.setAttribute(TWO_FACTOR_TOKEN_ATTRIBUTE,  "notnull");
+//					request.setAttribute(TWO_FACTOR_TOKEN_ATTRIBUTE,  "notnull");
+					request.setAttribute(TWO_FACTOR_PASSWORD_ATTRIBUTE,  super.obtainPassword(request));
 					request.setAttribute(USER_ATTRIBUTE, user.getUser());
-					handler.onAuthenticationFailure(request, response, new TwoFactorAuthRequiredException("OTP sent", true));
+					handler.onAuthenticationFailure(request, response, new TwoFactorAuthRequiredException("OTP Request", true));
 					return;
 				}
 			}
@@ -235,141 +200,11 @@ public class TwoFactorAuthFilter  extends UsernamePasswordAuthenticationFilter {
 	private boolean checkTOTPCode(HttpServletRequest request, HttpServletResponse response) {
 		// get this as a query from user
 		String secretKey = "OIOO6UNMFDDM7D5YYKCBJZR4AX3IKO5H";
-		String twoFactorToken = UtilImpl.processStringValue(request.getParameter(TWO_FACTOR_TOKEN_ATTRIBUTE));
+		String twoFactorCode = UtilImpl.processStringValue(request.getParameter(TWO_FACTOR_CODE_ATTRIBUTE));
 		
 		String code = getTOTPCode(secretKey);
 		
-		return code.equals(twoFactorToken);
-	}
-	
-	/**
-	 * This gets called when:
-	 * - a push notification needs to be sent.
-	 * - a user is not performing a 2FA code entry.
-	 * 
-	 * At the end of this method, the 2FA details will either be updated with the new details or cleared.
-	 * 
-	 * @param request
-	 * @param response
-	 * @return true: halt at this filter. false: continue to next security filter.
-	 * @throws IOException
-	 * @throws ServletException
-	 */
-	private boolean doPushNotificationProcess(HttpServletRequest request, HttpServletResponse response) 
-	throws IOException, ServletException {
-		String username = obtainUsername(request);
-		String customer = obtainCustomer(request);
-		
-		UserTFA user = getUserDB(username);
-		
-		if (user == null) {
-			return false;
-		}
-		
-		// if cannot authenticate, let the security chain continue
-		// don't send the push notification
-		// let whoever handles incorrect credentials take over
-		// i.e fall out of this filter without doing anything (call chain.doFilter(...))
-		if (canAuthenticateWithPassword(request, user)) {
-			UtilImpl.LOGGER.info("Sending 2fa code push notification "); 
-			
-			// save previous selected remember me token so it can be sent back
-			boolean rememberMe = request.getParameter(REMEMBER_PARAMETER) != null;
-			
-			String twoFactorCodeClearText = generateTFACode();
-			
-			Timestamp generatedTS = new Timestamp();
-			user.setTfaCodeGeneratedTimestamp(generatedTS);
-			user.setTfaCode(EXT.hashPassword(twoFactorCodeClearText));
-			user.setTfaToken(generateTFAPushId(generatedTS));
-			
-			updateUserTFADetails(user);
-			
-			pushNotification(user, twoFactorCodeClearText);
-
-			// redirect to 2FA code entry page
-			TwoFactorAuthenticationForwardHandler handler = new TwoFactorAuthenticationForwardHandler("/login");
-
-			request.setAttribute(CUSTOMER_ATTRIBUTE, customer);
-			request.setAttribute(TWO_FACTOR_TOKEN_ATTRIBUTE,  user.getTfaToken());
-			request.setAttribute(USER_ATTRIBUTE, user.getUser());
-			request.setAttribute(REMEMBER_ATTRIBUTE, Boolean.valueOf(rememberMe));
-			handler.onAuthenticationFailure(request, response, new TwoFactorAuthRequiredException("OTP sent", false));
-			return true;
-		}
-		
-		clearTFADetails(user);
-		return false;
-	}
-	
-	/**
-	 * if everything checks out and its just the code which is incorrect, then let the user enter the code again.
-	 * 
-	 * @param request
-	 * @param response
-	 * @return true: halt at this filter. false: continue to next security filter.
-	 * @throws IOException
-	 * @throws ServletException
-	 */
-	private boolean doTFACodeCheckProcess(HttpServletRequest request, HttpServletResponse response) 
-	throws IOException, ServletException {
-		String twoFactorToken = UtilImpl.processStringValue(request.getParameter(TWO_FACTOR_TOKEN_ATTRIBUTE));
-		String username = obtainUsername(request);
-		UserTFA user = getUserDB(username);
-		
-		if ((! tfaCodesPopulated(user)) || (! twoFactorToken.equals(user.getTfaToken())) ) {
-			UtilImpl.LOGGER.info("Inconsistent TFA details. TFA Codes populated : " + 
-									String.valueOf(tfaCodesPopulated(user)) +
-									", TFA Token matches: " + 
-									String.valueOf(twoFactorToken.equals(user.getTfaToken())));
-			return false;
-		}
-		
-		if (tfaCodeExpired(user.getCustomer(), twoFactorToken)) {
-			UtilImpl.LOGGER.info("Users TFA Code has timed out.");
-			SimpleUrlAuthenticationFailureHandler handler = new SimpleUrlAuthenticationFailureHandler("/login");
-			handler.onAuthenticationFailure(request, response, new AccountExpiredException("TFA timeout"));
-			return true;
-		}
-		
-		try {
-			attemptAuthentication(request, response);
-		}
-		catch (@SuppressWarnings("unused") AuthenticationException e) {
-			// throws error if authentication failed, catch so we want to handle it
-			UtilImpl.LOGGER.info("Provided TFA code does not match."); 
-			TwoFactorAuthenticationForwardHandler handler = new TwoFactorAuthenticationForwardHandler("/login");
-			request.setAttribute(CUSTOMER_ATTRIBUTE, user.getCustomer());
-			request.setAttribute(TWO_FACTOR_TOKEN_ATTRIBUTE,  user.getTfaToken());
-			request.setAttribute(USER_ATTRIBUTE, user.getUser());
-			handler.onAuthenticationFailure(request, response, new TwoFactorAuthRequiredException("OTP sent", true));
-			return true;
-		}
-		
-		return false;
-	}
-	
-	private void clearTFADetails(UserTFA user) {
-		boolean edited = false;
-		
-		if (user.getTfaCodeGeneratedTimestamp() != null) {
-			user.setTfaCodeGeneratedTimestamp(null);
-			edited = true;
-		}
-		
-		if (user.getTfaCode() != null) {
-			user.setTfaCode(null);
-			edited = true;
-		}
-		
-		if (user.getTfaToken() != null) {
-			user.setTfaToken(null);
-			edited = true;
-		}
-
-		if (edited) {
-			updateUserTFADetails(user);
-		}
+		return code.equals(twoFactorCode);
 	}
 	
 	@Override
@@ -385,38 +220,6 @@ public class TwoFactorAuthFilter  extends UsernamePasswordAuthenticationFilter {
 		}
 		
 		return customerName;
-	}
-	
-	protected void pushNotification(UserTFA user, String code) {
-		String emailAddress = user.getEmail();
-		if (emailAddress == null) {
-			UtilImpl.LOGGER.warning("No email found for user : " + user.getUsername()); 
-			return;
-		}
-		
-		String emailSubjectDB = null;
-		String emailBodyDB = null;
-		try (Connection c = EXT.getDataStoreConnection()) {
-			try (PreparedStatement s = c.prepareStatement("select twoFactorEmailSubject, twoFactorEmailBody from ADM_Configuration where bizCustomer = ?")) {
-				s.setString(1, user.getCustomer());
-				try (ResultSet rs = s.executeQuery()) {
-					if (rs.next()) {
-						emailSubjectDB = rs.getString(1);
-						emailBodyDB = rs.getString(2);
-					}
-				}
-			}
-		}
-		catch (SQLException e) {
-			throw new DomainException("Failed to get Configuration email template", e);
-		}
-		
-		String emailBody = (emailBodyDB == null) ? SYSTEM_TWO_FACTOR_CODE_BODY : emailBodyDB;
-		String emailSubject = (emailSubjectDB == null) ? SYSTEM_TWO_FACTOR_CODE_SUBJECT : emailSubjectDB;
-		EXT.sendMail(new Mail().addTo(emailAddress)
-								.from(UtilImpl.SMTP_SENDER)
-								.subject(emailSubject)
-								.body(emailBody.replace(TFA_CODE_KEY, code)));
 	}
 	
 	/**

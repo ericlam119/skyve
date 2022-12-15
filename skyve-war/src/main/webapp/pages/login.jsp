@@ -1,3 +1,4 @@
+<%@page import="org.skyve.impl.web.spring.TwoFactorAuthFilter"%>
 <%@ page session="false" language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.util.Locale"%>
 <%@ page import="org.skyve.CORE"%>
@@ -11,10 +12,12 @@
 <%@ page import="org.skyve.impl.web.spring.TwoFactorAuthPushFilter"%>
 <%
 	String tfaToken = UtilImpl.processStringValue((String) request.getAttribute(TwoFactorAuthPushFilter.TWO_FACTOR_TOKEN_ATTRIBUTE));
-	boolean show2FA = (tfaToken != null);
+	String tfaPassword = UtilImpl.processStringValue((String) request.getAttribute(TwoFactorAuthFilter.TWO_FACTOR_PASSWORD_ATTRIBUTE));
+	boolean show2FA = (tfaToken != null) || (tfaPassword != null);
 	boolean rmChecked = false;
 	String user = null;
 	boolean error2FA = false;
+	
 	
 
 	String basePath = Util.getSkyveContextUrl() + "/";
@@ -262,12 +265,18 @@
 		                <% } %>
 		                </div>
 		                <div class="field">
-		                	<% if (show2FA) { %>
+		                	<% if (tfaToken != null) { %>
 								<div class="ui left icon input">
 			                        <i class="lock icon"></i>
 			                        <input type="password" id="password" name="password" spellcheck="false" autocapitalize="none" autocomplete="off" autocorrect="none" placeholder="<%=Util.i18n("page.login.2FACode.label", locale)%>"/>
 			                    </div>
 			                    <input type="password" id="tfaToken" name="tfaToken" hidden="true" value="<%=tfaToken%>"/>
+							<% } else if (tfaPassword != null) { %>
+								<div class="ui left icon input">
+			                        <i class="lock icon"></i>
+			                        <input type="password" id="tfaCode" name="tfaCode" spellcheck="false" autocapitalize="none" autocomplete="off" autocorrect="none" placeholder="<%=Util.i18n("page.login.2FACode.label", locale)%>"/>
+			                    </div>
+			                    <input type="password" id="password" name="password" hidden="true" value="<%=tfaPassword%>"/>
 							<% } else { %>
 			                    <div class="ui left icon input">
 			                        <i class="lock icon"></i>

@@ -131,8 +131,8 @@ public class SpringSecurityConfig {
 				.frameOptions().disable()
 				.contentTypeOptions().disable();
 
-//		TwoFactorAuthPushEmailFilter tfaEmail = new TwoFactorAuthPushEmailFilter(userDetailsManager());
-//		http.addFilterBefore(tfaEmail, UsernamePasswordAuthenticationFilter.class);
+		TwoFactorAuthPushEmailFilter tfaEmail = new TwoFactorAuthPushEmailFilter(userDetailsManager());
+		http.addFilterBefore(tfaEmail, UsernamePasswordAuthenticationFilter.class);
 		
 		TwoFactorAuthFilter tfaAuth = new TwoFactorAuthFilter(userDetailsManager());
 		http.addFilterBefore(tfaAuth, UsernamePasswordAuthenticationFilter.class);
@@ -150,7 +150,7 @@ public class SpringSecurityConfig {
 		DefaultSecurityFilterChain result = http.build();
 		// Note AuthenticationManager is not available as a shared object until after build()
 		AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
-//		tfaEmail.setAuthenticationManager(authenticationManager);
+		tfaEmail.setAuthenticationManager(authenticationManager);
 		tfaAuth.setAuthenticationManager(authenticationManager);
 		return result;
 	}
