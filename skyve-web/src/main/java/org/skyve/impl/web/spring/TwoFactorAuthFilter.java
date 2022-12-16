@@ -33,10 +33,9 @@ public class TwoFactorAuthFilter  extends AbstractTwoFactorAuthFilter {
 	}
 	
 	@Override
-	protected boolean isTFARequired(HttpServletRequest request) {
+	protected boolean isTFARequired(HttpServletRequest request, UserTFA userTfa) {
 		String customerName = obtainCustomer(request);
 		
-		UserTFA userTfa = getUserDB(request);
 		if (userTfa.getTotpSeed() == null) {
 			return false;
 		}
@@ -48,10 +47,8 @@ public class TwoFactorAuthFilter  extends AbstractTwoFactorAuthFilter {
 	}
 
 	@Override
-	protected void doTFAFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain) 
+	protected void doTFAFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain, UserTFA userTfa) 
 	throws IOException, ServletException{
-		String username = obtainUsername(request);
-		UserTFA user = getUserDB(username);
 		
 		String twoFactorCode = UtilImpl.processStringValue(request.getParameter(TWO_FACTOR_CODE_ATTRIBUTE));
 		if (twoFactorCode == null) {
@@ -60,25 +57,25 @@ public class TwoFactorAuthFilter  extends AbstractTwoFactorAuthFilter {
 			boolean rememberMe = request.getParameter(REMEMBER_PARAMETER) != null;
 			
 			TwoFactorAuthenticationForwardHandler handler = new TwoFactorAuthenticationForwardHandler("/login");
-			request.setAttribute(CUSTOMER_ATTRIBUTE, user.getCustomer());
+			request.setAttribute(CUSTOMER_ATTRIBUTE, userTfa.getCustomer());
 			request.setAttribute(TWO_FACTOR_PASSWORD_ATTRIBUTE,  super.obtainPassword(request));
-			request.setAttribute(USER_ATTRIBUTE, user.getUser());
+			request.setAttribute(USER_ATTRIBUTE, userTfa.getUser());
 			request.setAttribute(REMEMBER_ATTRIBUTE, Boolean.valueOf(rememberMe));
 			handler.onAuthenticationFailure(request, response, new TwoFactorAuthRequiredException("OTP sent", false));
 			return;
 		}
 		
-		if( checkTOTPCode(request, response) ) {
+		if( checkTOTPCode(request, response, userTfa) ) {
 			chain.doFilter(request, response);
 			return;
 		} else {
-			this.publishAuthenticationFailedEvent(username);
+			this.publishAuthenticationFailedEvent(userTfa.getUsername());
 			
 			UtilImpl.LOGGER.info("Provided TFA code does not match."); 
 			TwoFactorAuthenticationForwardHandler handler = new TwoFactorAuthenticationForwardHandler("/login");
-			request.setAttribute(CUSTOMER_ATTRIBUTE, user.getCustomer());
+			request.setAttribute(CUSTOMER_ATTRIBUTE, userTfa.getCustomer());
 			request.setAttribute(TWO_FACTOR_PASSWORD_ATTRIBUTE,  super.obtainPassword(request));
-			request.setAttribute(USER_ATTRIBUTE, user.getUser());
+			request.setAttribute(USER_ATTRIBUTE, userTfa.getUser());
 			handler.onAuthenticationFailure(request, response, new TwoFactorAuthRequiredException("OTP Request", true));
 			return;
 		}
@@ -87,11 +84,11 @@ public class TwoFactorAuthFilter  extends AbstractTwoFactorAuthFilter {
 	}
 
 
-	private boolean checkTOTPCode(HttpServletRequest request, HttpServletResponse response) {
+	private boolean checkTOTPCode(HttpServletRequest request, HttpServletResponse response, UserTFA userTFA) {
 		// get this as a query from user
 //		String secretKey = "OIOO6UNMFDDM7D5YYKCBJZR4AX3IKO5H";
 		
-		String secretKey = getUserDB(request).getTotpSeed();
+		String secretKey = userTFA.getTotpSeed();
 		String twoFactorCode = UtilImpl.processStringValue(request.getParameter(TWO_FACTOR_CODE_ATTRIBUTE));
 		String code = getExpectedTOTPCode(secretKey);
 		

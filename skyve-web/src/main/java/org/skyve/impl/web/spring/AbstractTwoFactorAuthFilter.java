@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.skyve.EXT;
 import org.skyve.domain.messages.DomainException;
-import org.skyve.impl.util.TFAConfigurationSingleton;
 import org.skyve.impl.util.UtilImpl;
 import org.springframework.security.authentication.AuthenticationEventPublisher;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -64,13 +63,27 @@ public abstract class AbstractTwoFactorAuthFilter extends UsernamePasswordAuthen
 		HttpServletRequest request = (HttpServletRequest) iRequest;
 		HttpServletResponse response = (HttpServletResponse) iResponse;
 		
+		String customerName = obtainCustomer(request);
+		if (customerName == null) {
+			chain.doFilter(request, response);
+			return;
+		}
+		
+		String username = obtainUsername(request);
+		UserTFA userTFA = getUserDB(username);
+		if (userTFA == null) {
+			chain.doFilter(request, response);
+			return;
+		}
+		
+		
 		if (skipTFAFilter(request, response)) {
 			chain.doFilter(request, response);
 			return;
 		}
 		
-		if (isTFARequired(request)) {
-			doTFAFilter(request, response, chain);
+		if (isTFARequired(request, userTFA)) {
+			doTFAFilter(request, response, chain, userTFA);
 			return;
 		}
 		
@@ -78,9 +91,9 @@ public abstract class AbstractTwoFactorAuthFilter extends UsernamePasswordAuthen
 	
 	}
 	
-	protected abstract boolean isTFARequired(HttpServletRequest request);
+	protected abstract boolean isTFARequired(HttpServletRequest request, UserTFA userTFA);
 	
-	protected abstract void doTFAFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException;
+	protected abstract void doTFAFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain, UserTFA userTFA) throws IOException, ServletException;
 	
 	protected boolean skipTFAFilter(HttpServletRequest request, HttpServletResponse response) {
 		// No two factor customers defined
@@ -131,10 +144,6 @@ public abstract class AbstractTwoFactorAuthFilter extends UsernamePasswordAuthen
 		return customerName;
 	}
 	
-	protected UserTFA getUserDB(HttpServletRequest request) {
-		return getUserDB(obtainUsername(request));
-	}
-	
 	/**
 	 * Get the user details required for this filter
 	 * 
@@ -142,7 +151,7 @@ public abstract class AbstractTwoFactorAuthFilter extends UsernamePasswordAuthen
 	 * @return
 	 * @throws Exception 
 	 */
-	protected UserTFA getUserDB(String username) {
+	private UserTFA getUserDB(String username) {
 		UserDetails userDetails;
 		try {
 			userDetails = userDetailsManager.loadUserByUsername(username);
