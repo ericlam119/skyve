@@ -85,7 +85,7 @@ class SkyveRestClient {
 
     return authHeader;
 */
-    return 'Basic ${base64.encode(utf8.encode('demo/admin:admin'))}';
+    return 'Basic ${base64.encode(utf8.encode('demo/setup:setup'))}';
   }
 
   /// Try to use the stored credentials to "log in", throws an error

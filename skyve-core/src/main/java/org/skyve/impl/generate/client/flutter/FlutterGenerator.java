@@ -118,6 +118,6 @@ public class FlutterGenerator {
 	}
 
 	public static void main(String[] args) throws Exception {
-		new FlutterGenerator("desktop", "flutest", "/Users/mike/_/flutest/").generate();
+		new FlutterGenerator("desktop", "flutter_application_skyve", "C:\\code\\skyveRnd2\\flutter_application_skyve").generate();
 	}
 }
