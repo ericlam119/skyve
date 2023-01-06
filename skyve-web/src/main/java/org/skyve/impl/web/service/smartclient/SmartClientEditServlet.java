@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.security.Principal;
-import java.security.SecureRandom;
 import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -141,11 +140,11 @@ public class SmartClientEditServlet extends HttpServlet {
 		// If this is a mutating request, we'll definitely need a new CSRF Token
 		if (Operation.fetch.toString().equals(operationType)) {
 			if (newCsrfToken == null) {
-				newCsrfToken = Integer.valueOf(new SecureRandom().nextInt());
+				newCsrfToken = StateUtil.createToken();
 			}
 		}
 		else {
-			newCsrfToken = Integer.valueOf(new SecureRandom().nextInt());
+			newCsrfToken = StateUtil.createToken();
 		}
     	response.setIntHeader("X-CSRF-TOKEN", newCsrfToken.intValue());
 
@@ -551,30 +550,20 @@ public class SmartClientEditServlet extends HttpServlet {
 	    		}
 	    	}
 	    	else { // persisted instance (or a zoomout)
-	    		boolean persistentDocument = processDocument.isPersistable();
-	    		// if document is persistent, try to retrieve the instance
-	    		if (persistentDocument) {
-	    			processBean = persistence.retrieve(processDocument, bizId);
+	    		// resolve the bean under edit
+	    		try {
+	    			processBean = WebUtil.findReferencedBean(processDocument, bizId, persistence, contextBean, webContext);
 	    		}
-	    		// if we have no process bean, this mean it aint persisted yet, its a zoomOut
-	    		// We're at the top level, so just let the process bean be the contextBean
-	    		if (processBean == null) { // not persisted
+	    		catch (NoResultsException e) {
+		    		// if we have no process bean, this mean it ain't persisted yet, its a zoomOut.
+		    		// We're at the top level, so just let the process bean be the contextBean
+	    			if (contextBean == null) {
+	    	    		// We got nothing! Either the bean has been deleted, or the user doesn't have read access on this
+	    				throw e;
+	    			}
 	    			processBean = contextBean;
 	    		}
-	    		// We got nothing! Either the bean has been deleted, or the user doesn't have read access on this
-	    		if (processBean == null) {
-	    			throw new NoResultsException();
-	    		}
-	    		if (persistentDocument) {
-		    		if (! user.canReadBean(processBean.getBizId(), 
-	    									processBean.getBizModule(), 
-	    									processBean.getBizDocument(), 
-	    									processBean.getBizCustomer(), 
-	    									processBean.getBizDataGroupId(), 
-	    									processBean.getBizUserId())) {
-		    			throw new SecurityException("this data", user.getName());
-		    		}
-	    		}
+
 	    		if (action == null) { // callbacks not fired after a zoom out on the parent view post
 					boolean vetoed = internalCustomer.interceptBeforePreExecute(ImplicitActionName.Edit, processBean, null, webContext);
 					if (! vetoed) {
