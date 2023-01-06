@@ -42,6 +42,19 @@ public class TwoFactorAuthConfigurationSingleton implements Observer {
 		return isPushTfa(getConfig(customerName));
 	}
 	
+	public boolean isTfaTOTP(String customerName) {
+		if (customerName == null) {
+			return false;
+		}
+		
+		TwoFactorAuthCustomerConfiguration tfaConfig = getConfig(customerName);
+		if (tfaConfig == null) {
+			return false;
+		}
+		
+		return tfaConfig.isTfaTOTP();
+	}
+	
 	
 	public TwoFactorAuthCustomerConfiguration getConfig(String customerName) {
 		return configuration.get(customerName);

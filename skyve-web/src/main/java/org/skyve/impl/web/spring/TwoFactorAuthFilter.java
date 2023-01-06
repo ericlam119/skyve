@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.codec.binary.Base32;
 import org.apache.commons.codec.binary.Hex;
-import org.skyve.impl.util.TFAConfigurationSingleton;
+import org.skyve.impl.util.TwoFactorAuthConfigurationSingleton;
 import org.skyve.impl.util.UtilImpl;
 import org.springframework.security.provisioning.UserDetailsManager;
 
@@ -33,7 +33,7 @@ public class TwoFactorAuthFilter  extends AbstractTwoFactorAuthFilter {
 	}
 	
 	@Override
-	protected boolean isTFARequired(HttpServletRequest request, UserTFA userTfa) {
+	protected boolean isTFARequired(HttpServletRequest request, TwoFactorAuthUser userTfa) {
 		String customerName = obtainCustomer(request);
 		
 		if (userTfa.getTotpSeed() == null) {
@@ -43,11 +43,12 @@ public class TwoFactorAuthFilter  extends AbstractTwoFactorAuthFilter {
 			return false;
 		}
 		
-		return TFAConfigurationSingleton.getInstance().isTfaTOTP(customerName);
+		
+		return TwoFactorAuthConfigurationSingleton.getInstance().isTfaTOTP(customerName);
 	}
 
 	@Override
-	protected void doTFAFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain, UserTFA userTfa) 
+	protected void doTFAFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain, TwoFactorAuthUser userTfa) 
 	throws IOException, ServletException{
 		
 		String twoFactorCode = UtilImpl.processStringValue(request.getParameter(TWO_FACTOR_CODE_ATTRIBUTE));
@@ -56,7 +57,7 @@ public class TwoFactorAuthFilter  extends AbstractTwoFactorAuthFilter {
 			// save previous selected remember me token so it can be sent back
 			boolean rememberMe = request.getParameter(REMEMBER_PARAMETER) != null;
 			
-			TwoFactorAuthenticationForwardHandler handler = new TwoFactorAuthenticationForwardHandler("/login");
+			TwoFactorAuthForwardHandler handler = new TwoFactorAuthForwardHandler("/login");
 			request.setAttribute(CUSTOMER_ATTRIBUTE, userTfa.getCustomer());
 			request.setAttribute(TWO_FACTOR_PASSWORD_ATTRIBUTE,  super.obtainPassword(request));
 			request.setAttribute(USER_ATTRIBUTE, userTfa.getUser());
@@ -72,7 +73,7 @@ public class TwoFactorAuthFilter  extends AbstractTwoFactorAuthFilter {
 			this.publishAuthenticationFailedEvent(userTfa.getUsername());
 			
 			UtilImpl.LOGGER.info("Provided TFA code does not match."); 
-			TwoFactorAuthenticationForwardHandler handler = new TwoFactorAuthenticationForwardHandler("/login");
+			TwoFactorAuthForwardHandler handler = new TwoFactorAuthForwardHandler("/login");
 			request.setAttribute(CUSTOMER_ATTRIBUTE, userTfa.getCustomer());
 			request.setAttribute(TWO_FACTOR_PASSWORD_ATTRIBUTE,  super.obtainPassword(request));
 			request.setAttribute(USER_ATTRIBUTE, userTfa.getUser());
@@ -84,7 +85,7 @@ public class TwoFactorAuthFilter  extends AbstractTwoFactorAuthFilter {
 	}
 
 
-	private boolean checkTOTPCode(HttpServletRequest request, HttpServletResponse response, UserTFA userTFA) {
+	private boolean checkTOTPCode(HttpServletRequest request, HttpServletResponse response, TwoFactorAuthUser userTFA) {
 		// get this as a query from user
 //		String secretKey = "OIOO6UNMFDDM7D5YYKCBJZR4AX3IKO5H";
 		

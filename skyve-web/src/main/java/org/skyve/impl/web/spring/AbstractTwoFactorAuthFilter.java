@@ -70,7 +70,7 @@ public abstract class AbstractTwoFactorAuthFilter extends UsernamePasswordAuthen
 		}
 		
 		String username = obtainUsername(request);
-		UserTFA userTFA = getUserDB(username);
+		TwoFactorAuthUser userTFA = getUserDB(username);
 		if (userTFA == null) {
 			chain.doFilter(request, response);
 			return;
@@ -91,13 +91,13 @@ public abstract class AbstractTwoFactorAuthFilter extends UsernamePasswordAuthen
 	
 	}
 	
-	protected abstract boolean isTFARequired(HttpServletRequest request, UserTFA userTFA);
+	protected abstract boolean isTFARequired(HttpServletRequest request, TwoFactorAuthUser userTFA);
 	
-	protected abstract void doTFAFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain, UserTFA userTFA) throws IOException, ServletException;
+	protected abstract void doTFAFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain, TwoFactorAuthUser userTFA) throws IOException, ServletException;
 	
 	protected boolean skipTFAFilter(HttpServletRequest request, HttpServletResponse response) {
 		// No two factor customers defined
-		if (UtilImpl.TFA_CUSTOMER == null) {
+		if (UtilImpl.TWO_FACTOR_AUTH_CUSTOMERS == null) {
 			return true;
 		}
 		
@@ -107,7 +107,7 @@ public abstract class AbstractTwoFactorAuthFilter extends UsernamePasswordAuthen
 		}
 		
 		String customerName = obtainCustomer(request);
-		if (!UtilImpl.TFA_CUSTOMER.contains(customerName)) {
+		if (!UtilImpl.TWO_FACTOR_AUTH_CUSTOMERS.contains(customerName)) {
 			return true;
 		}
 		
@@ -117,7 +117,7 @@ public abstract class AbstractTwoFactorAuthFilter extends UsernamePasswordAuthen
 		}
 
 		// TFA customer not in json
-		if (! UtilImpl.TFA_CUSTOMER.contains(customerName)) {
+		if (! UtilImpl.TWO_FACTOR_AUTH_CUSTOMERS.contains(customerName)) {
 			return true;
 		}
 
@@ -151,7 +151,7 @@ public abstract class AbstractTwoFactorAuthFilter extends UsernamePasswordAuthen
 	 * @return
 	 * @throws Exception 
 	 */
-	private UserTFA getUserDB(String username) {
+	private TwoFactorAuthUser getUserDB(String username) {
 		UserDetails userDetails;
 		try {
 			userDetails = userDetailsManager.loadUserByUsername(username);
@@ -161,13 +161,13 @@ public abstract class AbstractTwoFactorAuthFilter extends UsernamePasswordAuthen
 			return null;
 		}
 		
-		if (userDetails instanceof UserTFA) {
-			return (UserTFA) userDetails;
+		if (userDetails instanceof TwoFactorAuthUser) {
+			return (TwoFactorAuthUser) userDetails;
 		}
 		throw new DomainException("Two Factor Authentication expects the user details service : skyve.jdbcUserDetailsService()");
 	}
 	
-	protected void updateUserTFADetails(UserTFA user) {
+	protected void updateUserTFADetails(TwoFactorAuthUser user) {
 		userDetailsManager.updateUser(user);
 	}
 	
@@ -185,7 +185,7 @@ public abstract class AbstractTwoFactorAuthFilter extends UsernamePasswordAuthen
 	 * @param request
 	 * @return
 	 */
-	protected boolean canAuthenticateWithPassword(HttpServletRequest request, UserTFA user) {
+	protected boolean canAuthenticateWithPassword(HttpServletRequest request, TwoFactorAuthUser user) {
 		String password = obtainPassword(request);
 		password = (password != null) ? password : "";
 		

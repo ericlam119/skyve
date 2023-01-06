@@ -36,4 +36,7 @@ public class TwoFactorAuthCustomerConfiguration implements Serializable {
 	public boolean isTfaEmail() {
 		return "EMAIL".equals(tfaType);
 	}
+	public boolean isTfaTOTP() {
+		return "TOTP".equals(tfaType);
+	}
 }
